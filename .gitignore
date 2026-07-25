@@ -1,0 +1,10 @@
+# Entornos virtuales
+venv/
+.venv/
+
+# Archivos generados por Python
+__pycache__/
+*.py[cod]
+
+# Variables sensibles
+.env
