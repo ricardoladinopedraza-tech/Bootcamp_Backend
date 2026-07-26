@@ -87,3 +87,36 @@ Las validaciones protegen la API contra datos inválidos. Al combinar filtros y 
 ## Siguiente paso
 
 En el Día 50 crearé modelos Pydantic y aprenderé a recibir información mediante Request Body.
+
+Nuestro mapa va asi:
+
+BACKEND
+│
+├── Internet
+│
+├── HTTP
+│   ├── Request
+│   ├── Response
+│   ├── Status Codes
+│   └── Headers
+│
+├── APIs REST
+│   ├── Recursos
+│   ├── CRUD
+│   ├── Path Parameters
+│   └── Query Parameters
+│
+├── FastAPI
+│   ├── Rutas
+│   ├── Path Parameters
+│   ├── Query Parameters
+│   ├── Query()
+│   └── Path()
+│
+├── JSON
+│
+├── Python
+│   ├── requests
+│   └── FastAPI
+│
+└── Git
