@@ -21,8 +21,8 @@ app = FastAPI()
 @app.get("/usuarios")
 def usuarios(ciudad: Optional[str] = None):
     return {"ciudad": ciudad}
-'''
-#Varios Query Parameters
+
+#Varios Query Parameters  ______________________________________
 
 from typing import Optional
 from fastapi import FastAPI
@@ -39,8 +39,8 @@ def usuarios(
         "edad": edad
     }
 
-'''
-#Ahora haremos que nombre sea opcional. 
+
+#Ahora haremos que nombre sea opcional.  _________________________________
 
 from fastapi import FastAPI
 
@@ -96,3 +96,33 @@ def listar_usuarios(nombre: str | None = None):
 
     return usuarios_filtrados
 '''
+
+#Ejemplo de combinacion de Path y Query Parameters ________________________
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+#@app.get("/usuarios/{id}")
+#def obtener_usuario(
+#    id: int,
+#    ciudad: str
+#):
+#    return {
+#        "id": id,
+#        "ciudad": ciudad
+#    }
+
+#VArios Query parameters en el mismo ejemplo 
+
+@app.get("/usuarios/{id}")
+def usuario(
+    id: int,
+    ciudad: str,
+    edad: int
+):
+    return {
+        "id": id,
+        "ciudad": ciudad,
+        "edad": edad
+    }
