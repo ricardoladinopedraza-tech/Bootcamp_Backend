@@ -1,6 +1,6 @@
 #Ejemplo con nombre obligatorio.
 '''
-from fastapi import FastAPI
+from fastapi import FastAPI ______________________________
 
 app = FastAPI()
 
@@ -11,8 +11,35 @@ def saludar(nombre: str):
         "mensaje": f"Hola, {nombre}",
     }
 
+#Ejemplo de parametros opcionales ________________________
 
+from typing import Optional
+from fastapi import FastAPI
 
+app = FastAPI()
+
+@app.get("/usuarios")
+def usuarios(ciudad: Optional[str] = None):
+    return {"ciudad": ciudad}
+'''
+#Varios Query Parameters
+
+from typing import Optional
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/usuarios")
+def usuarios(
+    ciudad: str,
+    edad: int
+):
+    return {
+        "ciudad": ciudad,
+        "edad": edad
+    }
+
+'''
 #Ahora haremos que nombre sea opcional. 
 
 from fastapi import FastAPI
@@ -30,7 +57,7 @@ def saludar(nombre: str | None = None):
     return {
         "mensaje": f"Hola, {nombre}",
     }
-'''
+
 #Mini proyecto.  filtrar usuarios por nombre.
 
 from fastapi import FastAPI
@@ -68,3 +95,4 @@ def listar_usuarios(nombre: str | None = None):
     ]
 
     return usuarios_filtrados
+'''
