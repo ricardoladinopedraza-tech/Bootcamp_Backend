@@ -347,3 +347,44 @@ Durante todo el proceso de formación se mantendrán los siguientes principios:
 - Publicar el progreso en GitHub de forma incremental.
 - Construir proyectos reales que evolucionen con cada módulo.
 - Priorizar la calidad y el entendimiento sobre la velocidad.
+
+#######      Actualizacion    ###############
+
+## Módulo FastAPI
+
+**Estado:** 🔄 En progreso
+
+### Temas completados
+
+- Introducción a FastAPI
+- Path Parameters
+- Query Parameters
+- Validación con Path()
+- Validación con Query()
+- Request Body
+- BaseModel
+- Field()
+- Campos opcionales (`Optional`)
+- Valores por defecto
+- Modelos anidados (Nested Models)
+- Listas de modelos (`List[Modelo]`)
+
+
+
+
+
+### Proyecto en desarrollo
+
+**Proyecto 1 – API de Gestión de Usuarios**
+
+Funcionalidades implementadas:
+
+- Endpoints GET y POST.
+- Recepción de Path y Query Parameters.
+- Validación de parámetros.
+- Modelos con Pydantic.
+- Validación con `Field()`.
+- Campos opcionales.
+- Valores por defecto.
+- Modelos anidados.
+- Pruebas funcionales con Swagger.
