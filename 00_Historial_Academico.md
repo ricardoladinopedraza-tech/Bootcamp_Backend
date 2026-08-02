@@ -388,3 +388,65 @@ Funcionalidades implementadas:
 - Valores por defecto.
 - Modelos anidados.
 - Pruebas funcionales con Swagger.
+
+### Día 55 – Response Models
+
+Temas estudiados:
+
+- Response Models (`response_model`)
+- Separación entre modelos de entrada y salida
+- Filtrado automático de datos
+- Seguridad en respuestas HTTP
+- Validación de respuestas
+- Documentación automática en Swagger
+
+### Día 56 – Routers
+
+Temas estudiados:
+
+- APIRouter
+- Organización modular de APIs
+- include_router()
+- Separación de endpoints
+- Estructura profesional de proyectos FastAPI
+- Organización para trabajo en equipo
+
+### Día 57 – Prefix y Tags
+
+Temas estudiados:
+
+- prefix en APIRouter
+- tags para documentación
+- Organización de rutas
+- Organización de Swagger
+- Buenas prácticas para proyectos FastAPI
+
+### Día 58 – Depends()
+
+Temas estudiados:
+
+- Inyección de dependencias
+- Depends()
+- Reutilización de lógica
+- Separación de responsabilidades
+- Modularidad de la aplicación
+
+### Día 59 – Services
+
+Temas estudiados:
+
+- Separación de la lógica del negocio.
+- Carpeta services.
+- Reutilización de código.
+- Responsabilidad de los endpoints.
+- Arquitectura en capas.
+
+### Día 60 – Variables de Entorno
+
+Temas estudiados:
+
+- Variables de entorno.
+- Archivo `.env`.
+- Configuración de aplicaciones.
+- Separación entre código y configuración.
+- Buenas prácticas de seguridad.
