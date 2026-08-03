@@ -1,0 +1,9 @@
+Teclado - 25000
+Mouse - 20000
+Parlantes - 45000
+Padmouse - 15000
+Cpu - 1500000
+Pantalla - 300000
+Aceleradora - 450000
+Ram - 310000
+Cooler - 35000

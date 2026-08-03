@@ -1,0 +1,1 @@
+print("Ricardo ya sabe de entornos virtuales!!")

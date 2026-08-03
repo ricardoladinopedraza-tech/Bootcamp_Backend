@@ -1,0 +1,5 @@
+print("Hola Ricardo, iniciando en Python")
+nombre = input("como te llamas?")
+edad = input("Cuantos años tienes?")
+print("Hola", nombre)
+print("Tienes", edad, "años")

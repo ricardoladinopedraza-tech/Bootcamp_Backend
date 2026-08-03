@@ -450,3 +450,32 @@ Temas estudiados:
 - Configuración de aplicaciones.
 - Separación entre código y configuración.
 - Buenas prácticas de seguridad.
+
+# ✅ Día 61 — Introducción a SQLAlchemy
+
+## Temas estudiados
+
+- ¿Qué es un ORM?
+- Introducción a SQLAlchemy
+- Objetos vs tablas
+- Persistencia de datos
+- Arquitectura general SQLAlchemy + FastAPI
+- Inicio de la transición hacia PostgreSQL
+
+## Conceptos clave
+
+- SQLAlchemy actúa como puente entre Python y la base de datos.
+- Un ORM permite trabajar con objetos en lugar de escribir SQL constantemente.
+- Los datos dejarán de almacenarse únicamente en memoria.
+- SQLAlchemy será la base para implementar el CRUD sobre PostgreSQL.
+
+## Reorganización del proyecto
+
+Como parte del inicio de esta nueva etapa se reorganizó completamente el proyecto:
+
+- Se creó la carpeta `App/` para centralizar el desarrollo.
+- Se organizaron las carpetas `core`, `database`, `models`, `routers`, `schemas` y `services`.
+- Los apuntes técnicos se centralizaron en `Apuntes/`.
+- Se preparó la estructura que se utilizará durante el resto del bootcamp.
+
+Estado del proyecto: Arquitectura profesional preparada para comenzar el desarrollo con SQLAlchemy.
