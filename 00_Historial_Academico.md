@@ -650,3 +650,27 @@ class Usuario(Base):
 - Preparación para la creación física de tablas.
 
 **Estado del proyecto:** Primer modelo ORM implementado correctamente. La aplicación está lista para generar su primera tabla en la base de datos.
+
+## ✅ Día 64 – Creación automática de tablas
+
+### Temas vistos
+
+- Base.metadata
+- metadata.create_all()
+- Registro de modelos ORM
+- Creación automática de tablas
+- Importación de modelos
+- Archivo SQLite app.db
+
+### Logros
+
+- Configuración correcta de SQLAlchemy.
+- Instalación de dependencias faltantes.
+- Solución de errores de importación.
+- Ejecución exitosa de FastAPI.
+- Creación automática de la base de datos SQLite.
+- Primera tabla creada mediante ORM.
+
+### Estado
+
+✅ Completado.
