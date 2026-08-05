@@ -479,3 +479,174 @@ Como parte del inicio de esta nueva etapa se reorganizó completamente el proyec
 - Se preparó la estructura que se utilizará durante el resto del bootcamp.
 
 Estado del proyecto: Arquitectura profesional preparada para comenzar el desarrollo con SQLAlchemy.
+
+# ✅ Día 62 — Configuración inicial de SQLAlchemy
+
+## Temas estudiados
+
+- Arquitectura SQLAlchemy + PostgreSQL.
+- Engine.
+- Session.
+- Base.
+- Organización de la carpeta `database`.
+- Flujo de comunicación entre FastAPI y PostgreSQL.
+
+## Conceptos clave
+
+- SQLAlchemy actúa como puente entre FastAPI y PostgreSQL.
+- El Engine administra las conexiones con la base de datos.
+- Una Session representa una conversación temporal para realizar operaciones sobre la base de datos.
+- Las clases que heredan de Base representan tablas.
+
+## Flujo general
+
+Cliente
+
+↓
+
+Router
+
+↓
+
+Service
+
+↓
+
+Session
+
+↓
+
+SQLAlchemy
+
+↓
+
+PostgreSQL
+
+↓
+
+Respuesta
+
+## Aprendizajes destacados
+
+- Comprensión del papel de Engine, Session y Base.
+- Inicio de la configuración de SQLAlchemy dentro de una arquitectura profesional.
+- Relación entre FastAPI, SQLAlchemy y PostgreSQL.
+- Preparación de la aplicación para comenzar a trabajar con datos persistentes.
+
+Estado del proyecto: Aplicación preparada para comenzar la implementación del acceso a la base de datos mediante SQLAlchemy.
+
+# ✅ Día 62 — Configuración inicial de SQLAlchemy
+
+## Temas estudiados
+
+- Arquitectura SQLAlchemy.
+- Engine.
+- Session.
+- SessionLocal.
+- Base.
+- Archivo database.py.
+- Organización de la carpeta database.
+- Flujo FastAPI → SQLAlchemy → Base de datos.
+
+## Conceptos clave
+
+- SQLAlchemy actúa como intermediario entre FastAPI y la base de datos.
+- El Engine administra todas las conexiones de la aplicación y existe una única instancia durante su ejecución.
+- SessionLocal funciona como una fábrica que crea una nueva Session para cada petición.
+- Una Session representa una conversación temporal con la base de datos.
+- Base permite que las clases de Python representen tablas.
+
+## Archivo principal
+
+App/
+
+└── database/
+
+&nbsp;&nbsp;&nbsp;&nbsp;└── database.py
+
+Contiene:
+
+- Engine
+- SessionLocal
+- Base
+
+## Flujo de trabajo
+
+Cliente
+
+↓
+
+Router
+
+↓
+
+Service
+
+↓
+
+Session
+
+↓
+
+SQLAlchemy
+
+↓
+
+Base de datos
+
+↓
+
+Respuesta
+
+## Aprendizajes destacados
+
+- Comprensión de la arquitectura básica de SQLAlchemy.
+- Diferenciación clara entre Engine y Session.
+- Preparación del proyecto para comenzar la creación de modelos y tablas.
+- Inicio de la capa de persistencia de la aplicación.
+
+**Estado del proyecto:** Infraestructura de SQLAlchemy preparada. La aplicación está lista para comenzar la definición de modelos y la creación de tablas.
+
+# ✅ Día 63 — Primer Modelo ORM con SQLAlchemy
+
+## Temas estudiados
+
+- Concepto de ORM (Object Relational Mapping).
+- Creación del primer modelo.
+- Herencia de Base.
+- __tablename__.
+- Column().
+- Tipos Integer y String.
+- Llave primaria (Primary Key).
+
+## Conceptos clave
+
+- Cada clase representa una tabla.
+- Cada atributo representa una columna.
+- Cada objeto representa un registro.
+- Base permite que SQLAlchemy interprete la clase como una tabla.
+- __tablename__ define el nombre físico de la tabla.
+- Column() define cada uno de los campos de la tabla.
+
+## Modelo implementado
+
+```python
+class Usuario(Base):
+
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True)
+
+    nombre = Column(String)
+
+    correo = Column(String)
+```
+
+## Aprendizajes destacados
+
+- Primer modelo ORM creado correctamente.
+- Comprensión de la relación entre objetos de Python y tablas SQL.
+- Inicio del diseño de la base de datos mediante clases.
+- Preparación para la creación física de tablas.
+
+**Estado del proyecto:** Primer modelo ORM implementado correctamente. La aplicación está lista para generar su primera tabla en la base de datos.
