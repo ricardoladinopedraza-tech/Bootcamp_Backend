@@ -674,3 +674,6 @@ class Usuario(Base):
 ### Estado
 
 ✅ Completado.
+
+
+✅ Día 65 – CRUD (Create): insertar registros con SQLAlchemy. Uso de Session, add(), commit(), refresh(). Primeros endpoints POST y GET conectados a SQLite.
