@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from App.database.database import Base, engine, SessionLocal
@@ -41,3 +41,20 @@ def listar_usuarios(db: Session = Depends(get_db)):
     db.refresh(nuevo_usuario)
 
     return nuevo_usuario
+
+@app.get("/usuarios/{usuario_id}")
+def obtener_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    return usuario

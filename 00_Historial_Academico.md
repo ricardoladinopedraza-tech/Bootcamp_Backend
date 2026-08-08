@@ -677,3 +677,15 @@ class Usuario(Base):
 
 
 ✅ Día 65 – CRUD (Create): insertar registros con SQLAlchemy. Uso de Session, add(), commit(), refresh(). Primeros endpoints POST y GET conectados a SQLite.
+
+### Día 66 — Consultas con SQLAlchemy
+
+- Consultas mediante `db.query()`.
+- Obtención de múltiples registros con `.all()`.
+- Obtención de un registro con `.first()`.
+- Uso de `filter()` para establecer condiciones.
+- Manejo de resultados inexistentes mediante `None`.
+- Uso de `HTTPException`.
+- Respuesta `404 Not Found` cuando un usuario no existe.
+- Endpoint `GET /usuarios/{usuario_id}`.
+- Diferencia entre obtener todos los registros y obtener uno específico.
