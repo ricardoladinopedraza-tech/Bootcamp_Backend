@@ -689,3 +689,12 @@ class Usuario(Base):
 - Respuesta `404 Not Found` cuando un usuario no existe.
 - Endpoint `GET /usuarios/{usuario_id}`.
 - Diferencia entre obtener todos los registros y obtener uno específico.
+
+### Día 67 — Consultas y condiciones con SQLAlchemy
+- Consultas con `filter()` y `filter_by()`.
+- Operadores de comparación.
+- Uso de `and_()` y `or_()`.
+- Diferencia entre igualdad exacta (`==`) y búsqueda parcial (`contains()`).
+- Combinación de múltiples condiciones.
+- Uso de `.all()` y `.first()`.
+- Práctica real de consultas desde Swagger.

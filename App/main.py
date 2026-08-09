@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from App.database.database import Base, engine, SessionLocal
@@ -29,11 +30,6 @@ def crear_usuario(
         correo=correo
     )
 
-@app.get("/usuarios")
-def listar_usuarios(db: Session = Depends(get_db)):
-    usuarios = db.query(Usuario).all()
-    return usuarios
-
     db.add(nuevo_usuario)
 
     db.commit()
@@ -41,6 +37,13 @@ def listar_usuarios(db: Session = Depends(get_db)):
     db.refresh(nuevo_usuario)
 
     return nuevo_usuario
+
+
+@app.get("/usuarios")
+def listar_usuarios(db: Session = Depends(get_db)):
+    usuarios = db.query(Usuario).all()
+    return usuarios
+
 
 @app.get("/usuarios/{usuario_id}")
 def obtener_usuario(
@@ -58,3 +61,18 @@ def obtener_usuario(
         )
 
     return usuario
+
+
+@app.get("/usuarios/buscar/{nombre}")
+def buscar_usuario(
+    nombre: str,
+    db: Session = Depends(get_db)
+):
+    usuarios = db.query(Usuario).filter(
+        and_(
+            Usuario.nombre.contains(nombre),
+            Usuario.id > 1
+        )
+    ).all()
+
+    return usuarios
