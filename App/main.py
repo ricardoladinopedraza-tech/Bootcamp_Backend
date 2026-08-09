@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from App.database.database import Base, engine, SessionLocal
 from App.models.usuario import Usuario
+from App.schemas.usuario import UsuarioActualizar
 
 app = FastAPI()
 
@@ -76,3 +77,31 @@ def buscar_usuario(
     ).all()
 
     return usuarios
+
+@app.patch("/usuarios/{usuario_id}")
+def actualizar_usuario(
+    usuario_id: int,
+    datos: UsuarioActualizar,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    if datos.nombre is not None:
+        usuario.nombre = datos.nombre
+
+    if datos.correo is not None:
+        usuario.correo = datos.correo
+
+    db.commit()
+
+    db.refresh(usuario)
+
+    return usuario

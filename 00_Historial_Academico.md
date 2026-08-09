@@ -698,3 +698,17 @@ class Usuario(Base):
 - Combinación de múltiples condiciones.
 - Uso de `.all()` y `.first()`.
 - Práctica real de consultas desde Swagger.
+
+### Día 68 – Actualización parcial con PATCH y SQLAlchemy
+
+- Implementación de actualización parcial mediante `PATCH`.
+- Modelo Pydantic con campos opcionales.
+- Diferencia entre campo no enviado, `None` y valor enviado.
+- Uso de `model_dump()`.
+- Uso de `exclude_unset=True` para identificar únicamente los campos enviados.
+- Uso de `setattr()` para actualizar atributos dinámicamente.
+- Flujo de actualización: búsqueda → validación → modificación → `commit()` → `refresh()`.
+- Manejo de `404 Not Found` cuando el usuario no existe.
+- Diferencia conceptual entre `PATCH` (actualización parcial) y `PUT` (reemplazo/actualización completa).
+- Pruebas reales realizadas mediante Swagger.
+- Se verificó que modificar un campo mediante PATCH no altera los demás campos.
