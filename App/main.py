@@ -94,14 +94,37 @@ def actualizar_usuario(
             detail="Usuario no encontrado"
         )
 
-    if datos.nombre is not None:
-        usuario.nombre = datos.nombre
+    datos_actualizados = datos.model_dump(
+    exclude_unset=True
+)
 
-    if datos.correo is not None:
-        usuario.correo = datos.correo
+    for campo, valor in datos_actualizados.items():
+        setattr(usuario, campo, valor)
 
     db.commit()
 
     db.refresh(usuario)
 
     return usuario
+
+@app.delete("/usuarios/{usuario_id}")
+def eliminar_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    db.delete(usuario)
+    db.commit()
+
+    return {
+        "mensaje": "Usuario eliminado correctamente"
+    }

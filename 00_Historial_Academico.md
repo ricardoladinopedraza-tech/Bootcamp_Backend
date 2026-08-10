@@ -712,3 +712,18 @@ class Usuario(Base):
 - Diferencia conceptual entre `PATCH` (actualización parcial) y `PUT` (reemplazo/actualización completa).
 - Pruebas reales realizadas mediante Swagger.
 - Se verificó que modificar un campo mediante PATCH no altera los demás campos.
+
+### Día 69 – DELETE y eliminación de registros con SQLAlchemy
+
+- Implementación del endpoint `DELETE /usuarios/{usuario_id}`.
+- Búsqueda del usuario mediante `query()`, `filter()` y `first()`.
+- Verificación de existencia antes de eliminar.
+- Manejo de `404 Not Found` para usuarios inexistentes.
+- Uso de `db.delete()` para preparar la eliminación.
+- Uso de `db.commit()` para confirmar y persistir la eliminación.
+- Comprensión de por qué `refresh()` no es necesario después de eliminar.
+- Pruebas realizadas mediante Swagger.
+- Eliminación exitosa del usuario con ID 4.
+- Verificación mediante `GET /usuarios`.
+- Prueba de eliminación de un usuario inexistente (`ID 999`) con respuesta 404.
+- Consolidación del CRUD: POST, GET, PATCH y DELETE.
