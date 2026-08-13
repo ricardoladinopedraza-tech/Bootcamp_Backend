@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from App.database.database import Base, engine, SessionLocal
 from App.models.usuario import Usuario
+from App.models.pedido import Pedido
 from App.schemas.usuario import UsuarioActualizar
 
 app = FastAPI()
@@ -128,3 +129,51 @@ def eliminar_usuario(
     return {
         "mensaje": "Usuario eliminado correctamente"
     }
+
+
+@app.post("/pedidos")
+def crear_pedido(
+    producto: str,
+    usuario_id: int,
+    db: Session = Depends(get_db)
+):
+    nuevo_pedido = Pedido(
+        producto=producto,
+        usuario_id=usuario_id
+    )
+
+    db.add(nuevo_pedido)
+    db.commit()
+    db.refresh(nuevo_pedido)
+
+    return nuevo_pedido
+
+@app.get("/pedidos/usuario/{usuario_id}")
+def listar_pedidos_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db)
+):
+    pedidos = db.query(Pedido).filter(
+        Pedido.usuario_id == usuario_id
+    ).all()
+
+    return pedidos
+
+@app.get("/pedidos/detalle")
+def detalle_pedidos(db: Session = Depends(get_db)):
+
+    resultados = db.query(
+        Pedido.producto,
+        Usuario.nombre
+    ).join(
+        Usuario,
+        Pedido.usuario_id == Usuario.id
+    ).all()
+
+    return [
+        {
+            "producto": producto,
+            "nombre": nombre
+        }
+        for producto, nombre in resultados
+    ]

@@ -727,3 +727,47 @@ class Usuario(Base):
 - Verificación mediante `GET /usuarios`.
 - Prueba de eliminación de un usuario inexistente (`ID 999`) con respuesta 404.
 - Consolidación del CRUD: POST, GET, PATCH y DELETE.
+
+### Día 70 – Relaciones entre tablas, ForeignKey y JOIN con SQLAlchemy
+
+Estado: ✅ Finalizado
+
+Temas estudiados:
+
+- Relaciones entre tablas.
+- Primary Key y Foreign Key.
+- Relación uno a muchos (1:N).
+- Modelo Usuario y modelo Pedido.
+- `ForeignKey("usuarios.id")`.
+- Consultas de pedidos mediante `filter()`.
+- JOIN entre `Pedido` y `Usuario`.
+- `Pedido.usuario_id == Usuario.id`.
+- Diferencia entre consultar objetos ORM y columnas específicas.
+- Resultados de SQLAlchemy como lista de tuplas.
+- Transformación de tuplas a diccionarios.
+- Serialización de resultados para FastAPI.
+- Depuración de un `500 Internal Server Error`.
+- Verificación directa de las tablas y datos mediante SQLite.
+
+Práctica realizada:
+
+- Creación de pedidos relacionados con el usuario `id=1`.
+- Verificación directa en SQLite.
+- Consulta de todos los pedidos de un usuario.
+- Implementación de un JOIN entre usuarios y pedidos.
+- Resolución de un error de serialización producido por el resultado del JOIN.
+
+Conceptos consolidados:
+
+- ForeignKey establece la relación entre tablas.
+- JOIN utiliza esa relación para combinar información.
+- Una ForeignKey permite que múltiples registros de una tabla secundaria hagan referencia al mismo usuario.
+- El resultado de una consulta de columnas específicas puede ser una lista de tuplas.
+- FastAPI necesita una estructura adecuada para serializar el resultado como JSON.
+
+Resultado final:
+
+```text
+laptop  → Ricardo
+mouse   → Ricardo
+teclado → Ricardo
