@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from App.database.database import Base
 
@@ -12,3 +13,8 @@ class Usuario(Base):
     nombre = Column(String)
 
     correo = Column(String)
+
+    pedidos = relationship(
+        "Pedido",
+        back_populates="usuario"
+    )

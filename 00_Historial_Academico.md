@@ -771,3 +771,59 @@ Resultado final:
 laptop  → Ricardo
 mouse   → Ricardo
 teclado → Ricardo
+
+Día 71 – Relaciones ORM con SQLAlchemy
+
+Se estudió y practicó la relación entre modelos mediante SQLAlchemy ORM.
+
+Temas vistos
+
+ForeignKey
+
+relationship()
+
+back_populates
+
+Relaciones bidireccionales
+
+Navegación entre objetos relacionados
+
+pedido.usuario_id vs pedido.usuario
+
+usuario.pedidos
+
+db.add()
+
+db.flush()
+
+db.commit()
+
+db.rollback()
+
+Diferencia entre ForeignKey, relationship() y JOIN
+
+Uso de relaciones ORM desde FastAPI
+
+Serialización de resultados para respuestas JSON
+
+Comprobaciones prácticas
+
+Se comprobó directamente en el proyecto que:
+
+pedido.usuario.nombre
+
+permite acceder al nombre del usuario relacionado y que:
+
+pedido.usuario_id
+
+representa el valor de la Foreign Key.
+
+También se comprobó experimentalmente que flush() sincroniza la Foreign Key con la transacción antes de commit().
+
+Observación académica
+
+El tema de relaciones ORM fue considerado especialmente complejo y queda marcado como contenido de revisión futura.
+
+Estado
+
+✅ Día 71 completado.
