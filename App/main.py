@@ -6,6 +6,7 @@ from App.database.database import Base, engine, SessionLocal
 from App.models.usuario import Usuario
 from App.models.pedido import Pedido
 from App.schemas.usuario import UsuarioActualizar
+from App.schemas.pedido import (UsuarioPedidoResponse, PedidoDetalleResponse)
 
 app = FastAPI()
 
@@ -177,3 +178,75 @@ def detalle_pedidos(db: Session = Depends(get_db)):
         }
         for producto, nombre in resultados
     ]
+
+@app.get(
+    "/usuarios/{usuario_id}/pedidos",
+    response_model=list[UsuarioPedidoResponse]
+)
+def obtener_pedidos_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.id == usuario_id
+    ).first()
+
+    if not usuario:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    return usuario.pedidos
+
+@app.get(
+    "/usuarios/{usuario_id}/pedidos",
+    response_model=list[UsuarioPedidoResponse]
+)
+def obtener_pedidos_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.id == usuario_id
+    ).first()
+
+    if not usuario:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    return usuario.pedidos
+
+@app.get(
+    "/pedidos/detalle-orm",
+    response_model=list[PedidoDetalleResponse]
+)
+def obtener_pedidos_detalle_orm(
+    db: Session = Depends(get_db)
+):
+    pedidos = db.query(Pedido).all()
+
+    return pedidos
+
+@app.get(
+    "/pedidos/{pedido_id}",
+    response_model=PedidoDetalleResponse
+)
+def obtener_pedido(
+    pedido_id: int,
+    db: Session = Depends(get_db)
+):
+    pedido = db.query(Pedido).filter(
+        Pedido.id == pedido_id
+    ).first()
+
+    if not pedido:
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido no encontrado"
+        )
+
+    return pedido
+

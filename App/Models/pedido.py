@@ -21,3 +21,7 @@ class Pedido(Base):
         "Usuario",
         back_populates="pedidos"
     )
+
+
+
+    

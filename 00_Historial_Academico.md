@@ -827,3 +827,111 @@ El tema de relaciones ORM fue considerado especialmente complejo y queda marcado
 Estado
 
 ✅ Día 71 completado.
+
+Día 72 — Registro de aprendizaje
+
+Tema principal
+
+SQLAlchemy ORM: navegación mediante relationship() y respuestas anidadas con Pydantic.
+
+Se comprobó que:
+
+usuario.pedidos
+
+permite navegar desde un Usuario hacia sus pedidos, mientras:
+
+pedido.usuario
+
+permite navegar desde un Pedido hacia su usuario.
+
+Distinción fundamental
+
+Debe conservarse especialmente:
+
+pedido.usuario_id
+
+representa el valor de la Foreign Key.
+
+Mientras:
+
+pedido.usuario
+
+representa el objeto Usuario relacionado mediante relationship().
+
+Pydantic
+
+Se utilizó un modelo anidado con:
+
+model_config = {
+    "from_attributes": True
+}
+
+Esto permitió convertir la relación ORM en una respuesta JSON anidada.
+
+Ejemplo:
+
+{
+    "id": 1,
+    "producto": "laptop",
+    "usuario": {
+        "id": 1,
+        "nombre": "Ricardo",
+        "correo": "ricardol@correo.com"
+    }
+}
+
+Comparación importante
+
+JOIN
+
+SQL → JOIN → tuplas → diccionarios → JSON
+
+relationship()
+
+SQLAlchemy → Pedido → pedido.usuario → Usuario → Pydantic → JSON anidado
+
+Se consolidó que JOIN y relationship() son conceptos diferentes:
+
+JOIN es una operación de consulta SQL.
+
+relationship() representa una asociación entre objetos ORM y permite navegar entre ellos.
+
+FastAPI — aprendizaje adicional
+
+Al utilizar:
+
+/pedidos/detalle-orm
+
+FastAPI intentó inicialmente interpretarlo como:
+
+/pedidos/{pedido_id}
+
+Como pedido_id era int, produjo:
+
+Input should be a valid integer
+
+Esto reforzó la importancia de leer los errores de FastAPI para entender cómo el framework interpretó la solicitud.
+
+Hito conceptual del Día 72
+
+Este día consolida:
+
+Foreign Key ≠ relationship
+
+Específicamente:
+
+pedido.usuario_id → valor de Foreign Key
+
+pedido.usuario → objeto Usuario relacionado
+
+Y la navegación:
+
+usuario.pedidos → lista de Pedido
+
+pedido.usuario → Usuario
+
+queda como referencia fundamental para las siguientes sesiones.
+
+Estado
+
+Día 72 completado.
