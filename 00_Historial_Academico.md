@@ -935,3 +935,94 @@ queda como referencia fundamental para las siguientes sesiones.
 Estado
 
 Día 72 completado.
+
+Progreso
+
+Día 71: SQLAlchemy — relationship(), ForeignKey, back_populates, navegación bidireccional, flush() vs commit().
+
+Día 72: SQLAlchemy ORM — navegación Pedido → Usuario, respuestas anidadas con Pydantic y comparación JOIN vs relationship().
+
+Día 73: SQLAlchemy — Lazy Loading, problema N+1, joinedload() y selectinload().
+
+Hitos SQLAlchemy
+
+⭐ Día 71 — Relaciones ORM
+
+ForeignKey
+relationship()
+back_populates
+flush()
+commit()
+
+Distinción crítica:
+
+pedido.usuario_id → valor de Foreign Key
+pedido.usuario    → objeto Usuario relacionado
+
+⭐ Día 72 — Navegación ORM y respuestas anidadas
+
+usuario.pedidos → lista de Pedido
+pedido.usuario  → Usuario
+
+Se consolidó Pydantic con from_attributes=True y la diferencia conceptual entre JOIN y relationship().
+
+⭐ Día 73 — Estrategias de carga
+
+Se consolidaron:
+
+lazy loading
+N + 1
+joinedload()
+selectinload()
+
+Mapa central:
+
+ForeignKey
+    ↓
+Relación en BD
+
+relationship()
+    ↓
+Relación ORM entre objetos
+
+joinedload()
+    ↓
+Eager loading mediante JOIN
+
+selectinload()
+    ↓
+Eager loading mediante consulta agrupada
+
+Nota importante
+
+joinedload() y selectinload() no crean relaciones. La relación ya está definida por relationship().
+
+relationship() → DEFINE
+joinedload()   → CARGA mediante JOIN
+selectinload() → CARGA mediante consulta agrupada
+
+Problema N+1
+
+Se comprendió que, sin una estrategia adecuada de carga, recorrer relaciones puede provocar una consulta inicial más consultas adicionales repetidas:
+
+1 + N
+
+Esto puede generar trabajo y tráfico innecesarios para la base de datos.
+
+Notas del Ingeniero Ricardo
+
+relationship() define la relación; joinedload() controla cómo queremos cargar esa relación.
+
+ForeignKey → con qué columna de la BD se relaciona.
+
+relationship() → cómo se representa esa relación como objetos ORM.
+
+selectinload() → eager loading mediante consulta agrupada.
+
+joinedload() → eager loading mediante JOIN.
+
+Estado
+
+Día 73 completado.
+
+Siguiente paso del Bootcamp: Día 74 — profundizar en join() vs joinedload() y cuándo utilizar cada uno.
