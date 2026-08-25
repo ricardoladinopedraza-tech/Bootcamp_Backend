@@ -1026,3 +1026,132 @@ Estado
 Día 73 completado.
 
 Siguiente paso del Bootcamp: Día 74 — profundizar en join() vs joinedload() y cuándo utilizar cada uno.
+
+Día 74
+
+Se consolidó:
+
+join()
+    ↓
+participa en la construcción de la consulta
+
+frente a:
+
+joinedload()
+    ↓
+carga anticipadamente una relación ORM existente
+
+Pueden utilizarse conjuntamente:
+
+db.query(Pedido)    .join(Usuario)    .filter(Usuario.nombre == "Ricardo")    .options(joinedload(Pedido.usuario))
+
+Mapa maestro
+
+ForeignKey
+    ↓
+Relación en BD
+    ↓
+relationship()
+    ↓
+Relación ORM
+    ↓
+┌─────────────────────────────┐
+│                             │
+join()                    carga ORM
+│                             │
+↓                       ┌─────┴─────┐
+Consulta               joinedload() selectinload()
+│                       │             │
+filter / order_by      JOIN          consulta agrupada
+
+Notas importantes
+
+pedido.usuario_id es el valor de la Foreign Key; pedido.usuario es el objeto Usuario relacionado.
+
+relationship() define la relación; join() participa en la consulta; joinedload() controla la carga anticipada.
+
+Estado: Día 74 completado.
+
+Día 75 — join(), filter(), order_by() y joinedload()
+
+join() → participa en la construcción de la consulta e incorpora una entidad relacionada.
+
+filter() → determina qué registros forman parte del resultado.
+
+order_by() → determina el orden.
+
+joinedload() → controla la carga anticipada de una relación ORM ya existente.
+
+Se trabajó el ordenamiento por múltiples criterios:
+order_by(Usuario.nombre, Pedido.producto).
+
+Se consolidó la lectura de una consulta como secuencia:
+query → join → filter → joinedload → order_by → all.
+
+Día 76 — all(), first(), one() y one_or_none()
+
+.all() → todos los resultados como lista; sin resultados devuelve [].
+
+.first() → primer resultado o None; no comprueba unicidad.
+
+.one() → exige exactamente un resultado; cero o más de uno producen excepción.
+
+.one_or_none() → cero o un resultado; más de uno produce excepción.
+
+Se introdujo la cardinalidad esperada para elegir el método:
+
+0..muchos → .all()
+
+0..1 → .one_or_none()
+
+1 exacto → .one()
+
+1 o más, pero solo interesa el primero → .first()
+
+Conexión con FastAPI: first() puede devolver None, y el endpoint puede convertirlo en HTTPException(404).
+
+Buscar por ID suele implicar como máximo un registro; buscar por nombre puede producir varios.
+
+one_or_none() expresa muy bien una búsqueda sobre un campo que realmente sea UNIQUE.
+
+Cadena de conceptos prioritarios
+
+ForeignKey
+    ↓
+Relación en BD
+
+relationship()
+    ↓
+Relación ORM
+
+join()
+    ↓
+Participa en la consulta
+
+filter()
+    ↓
+Qué registros
+
+order_by()
+    ↓
+Qué orden
+
+joinedload()
+    ↓
+Carga anticipada
+
+all() / first() / one() / one_or_none()
+    ↓
+Cuántos resultados esperamos
+
+Distinción crítica para futuras revisiones
+
+pedido.usuario_id
+    ↓
+dato de la Foreign Key
+
+pedido.usuario
+    ↓
+objeto Usuario relacionado
+
+Mantener especialmente destacados para futuras revisiones: ForeignKey, relationship(), back_populates, flush() vs. commit(), joinedload(), selectinload(), join() y la diferencia entre pedido.usuario_id y pedido.usuario.
