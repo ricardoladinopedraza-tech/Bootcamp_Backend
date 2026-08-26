@@ -1155,3 +1155,101 @@ pedido.usuario
 objeto Usuario relacionado
 
 Mantener especialmente destacados para futuras revisiones: ForeignKey, relationship(), back_populates, flush() vs. commit(), joinedload(), selectinload(), join() y la diferencia entre pedido.usuario_id y pedido.usuario.
+
+Día 77 — CRUD, UPDATE, DELETE y commit()
+
+Se inició formalmente la conexión entre SQLAlchemy y CRUD.
+
+CREATE → POST
+READ   → GET
+UPDATE → PUT / PATCH
+DELETE → DELETE
+
+CREATE
+
+db.add(nuevo_usuario)
+db.commit()
+
+UPDATE
+
+usuario.nombre = "Johana López"
+db.commit()
+
+Modificar el objeto ORM y confirmar la transacción son operaciones diferentes.
+
+DELETE
+
+db.delete(usuario)
+db.commit()
+
+db.delete() marca el objeto para eliminación y db.commit() confirma la transacción.
+
+READ
+
+Normalmente no requiere commit() porque solamente consulta.
+
+flush() vs commit()
+
+flush() sincroniza los cambios pendientes de la sesión con la BD dentro de la transacción.
+
+commit() confirma la transacción.
+
+Cadena de conceptos prioritarios
+
+ForeignKey
+    ↓
+Relación en BD
+
+relationship()
+    ↓
+Relación ORM
+
+join()
+    ↓
+Participa en la consulta
+
+filter()
+    ↓
+Filtra registros
+
+order_by()
+    ↓
+Ordena resultados
+
+joinedload()
+    ↓
+Carga anticipadamente una relación
+
+all() / first() / one() / one_or_none()
+    ↓
+Determinan cómo obtenemos resultados
+
+db.add()
+    ↓
+Agrega objeto a la sesión
+
+db.delete()
+    ↓
+Marca objeto para eliminación
+
+db.commit()
+    ↓
+Confirma la transacción
+
+Distinción crítica para futuras revisiones
+
+pedido.usuario_id
+    ↓
+Valor de la Foreign Key
+
+pedido.usuario
+    ↓
+Objeto Usuario relacionado
+
+Mantener especialmente destacados para futuras revisiones: ForeignKey, relationship(), back_populates, flush() vs commit(), joinedload(), selectinload(), join() y la diferencia entre pedido.usuario_id y pedido.usuario.
+
+Estado actual
+
+Día 77 completado.
+
+El aprendizaje ha evolucionado desde consultas básicas hasta relaciones ORM, carga anticipada, construcción de consultas y operaciones CRUD con SQLAlchemy/FastAPI.
