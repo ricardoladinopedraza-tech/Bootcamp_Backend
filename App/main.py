@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import and_
-from sqlalchemy.orm import Session
+#from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, selectinload
 
 from App.database.database import Base, engine, SessionLocal
 from App.models.usuario import Usuario
@@ -45,6 +46,17 @@ def crear_usuario(
 @app.get("/usuarios")
 def listar_usuarios(db: Session = Depends(get_db)):
     usuarios = db.query(Usuario).all()
+    return usuarios
+
+
+@app.get("/usuarios/con-pedidos")
+def usuarios_con_pedidos(
+    db: Session = Depends(get_db)
+):
+    usuarios = db.query(Usuario).options(
+        selectinload(Usuario.pedidos)
+    ).all()
+
     return usuarios
 
 
@@ -108,6 +120,10 @@ def actualizar_usuario(
     db.refresh(usuario)
 
     return usuario
+
+
+
+
 
 @app.delete("/usuarios/{usuario_id}")
 def eliminar_usuario(
@@ -178,7 +194,27 @@ def detalle_pedidos(db: Session = Depends(get_db)):
         }
         for producto, nombre in resultados
     ]
+'''
+@app.get(
+    "/usuarios/{usuario_id}/pedidos",
+    response_model=list[UsuarioPedidoResponse]
+)
+def obtener_pedidos_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.id == usuario_id
+    ).first()
 
+    if not usuario:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    return usuario.pedidos
+'''
 @app.get(
     "/usuarios/{usuario_id}/pedidos",
     response_model=list[UsuarioPedidoResponse]
@@ -199,26 +235,8 @@ def obtener_pedidos_usuario(
 
     return usuario.pedidos
 
-@app.get(
-    "/usuarios/{usuario_id}/pedidos",
-    response_model=list[UsuarioPedidoResponse]
-)
-def obtener_pedidos_usuario(
-    usuario_id: int,
-    db: Session = Depends(get_db)
-):
-    usuario = db.query(Usuario).filter(
-        Usuario.id == usuario_id
-    ).first()
-
-    if not usuario:
-        raise HTTPException(
-            status_code=404,
-            detail="Usuario no encontrado"
-        )
-
-    return usuario.pedidos
-
+'''
+#Endpoint sin joinedload
 @app.get(
     "/pedidos/detalle-orm",
     response_model=list[PedidoDetalleResponse]
@@ -229,6 +247,37 @@ def obtener_pedidos_detalle_orm(
     pedidos = db.query(Pedido).all()
 
     return pedidos
+
+
+#Endpoint con joinedload()
+@app.get(
+    "/pedidos/detalle-orm",
+    response_model=list[PedidoDetalleResponse]
+)
+def obtener_pedidos_detalle_orm(
+    db: Session = Depends(get_db)
+):
+    pedidos = db.query(Pedido).options(
+        joinedload(Pedido.usuario)
+    ).all()
+
+    return pedidos
+'''
+#Endpoint con selectinload()
+@app.get(
+    "/pedidos/detalle-orm",
+    response_model=list[PedidoDetalleResponse]
+)
+def obtener_pedidos_detalle_orm(
+    db: Session = Depends(get_db)
+):
+    pedidos = db.query(Pedido).options(
+        selectinload(Pedido.usuario)
+    ).all()
+
+    return pedidos
+
+
 
 @app.get(
     "/pedidos/{pedido_id}",
@@ -249,4 +298,6 @@ def obtener_pedido(
         )
 
     return pedido
+
+
 

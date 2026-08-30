@@ -1253,3 +1253,31 @@ Estado actual
 Día 77 completado.
 
 El aprendizaje ha evolucionado desde consultas básicas hasta relaciones ORM, carga anticipada, construcción de consultas y operaciones CRUD con SQLAlchemy/FastAPI.
+
+Día 78
+
+Se consolidaron db.add(), db.commit() y db.refresh(), además de la diferencia entre modelos Pydantic y modelos ORM de SQLAlchemy.
+
+Día 79
+
+Se estudiaron flush(), rollback() y commit(), el manejo de errores y la atomicidad de transacciones, incluyendo el flujo Usuario + Pedido.
+
+Día 80
+
+Se consolidaron N+1, relationship(), joinedload() y selectinload(). Se comprobó el SQL generado por SQLAlchemy y se eliminó el endpoint duplicado que provocaba el warning de Duplicate Operation ID.
+
+Día 81
+
+Inicio del Bloque 2: PostgreSQL. Se estudiaron servidor, base de datos, tablas, registros, conexión y la diferencia entre usuarios/roles de PostgreSQL y usuarios de la aplicación.
+
+Día 82
+
+SQL fundamental: SELECT, INSERT, UPDATE, DELETE y WHERE. Se relacionaron estos comandos con las operaciones de SQLAlchemy y se aclaró la diferencia entre DELETE FROM usuarios; y DROP TABLE usuarios;.
+
+Estado
+
+El plan se retoma estrictamente desde el Día 81, evitando profundizar innecesariamente en temas fuera del objetivo diario.
+
+Próximo
+
+Día 83 — Relaciones SQL: PK, FK, JOIN y cardinalidad.
