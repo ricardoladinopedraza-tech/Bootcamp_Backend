@@ -1278,6 +1278,151 @@ Estado
 
 El plan se retoma estrictamente desde el Día 81, evitando profundizar innecesariamente en temas fuera del objetivo diario.
 
-Próximo
+Día 83 — Relaciones SQL
 
-Día 83 — Relaciones SQL: PK, FK, JOIN y cardinalidad.
+Se estudiaron:
+
+Primary Key (PK).
+
+Foreign Key (FK).
+
+JOIN.
+
+Cardinalidad.
+
+Relación del proyecto:
+
+Usuario 1 ─────────── N Pedido
+
+Se consolidó:
+
+PK → identifica
+FK → relaciona
+JOIN → combina información en una consulta
+Cardinalidad → describe cuántos registros pueden relacionarse
+
+Día 84 — PostgreSQL + Python
+
+Se estudió la conexión desde Python mediante psycopg.
+
+FastAPI
+   ↓
+SQLAlchemy
+   ↓
+psycopg
+   ↓
+PostgreSQL
+
+Se consolidó la diferencia entre SQLAlchemy como ORM y psycopg como driver.
+
+Día 85 — PostgreSQL + SQLAlchemy
+
+Se realizó el cambio de SQLite a PostgreSQL:
+
+SQLite → app.db
+
+a:
+
+PostgreSQL → bootcamp_backend
+
+Los modelos y operaciones ORM principales permanecieron iguales.
+
+Se comprobó que:
+
+Base.metadata.create_all(bind=engine)
+
+crea la estructura de las tablas, pero:
+
+create_all() ≠ migración de datos
+
+Los registros existentes de SQLite no se transfieren automáticamente.
+
+Día 86 — Variables de entorno y .env
+
+Se estudió:
+
+variables de entorno;
+
+.env;
+
+python-dotenv;
+
+load_dotenv();
+
+os.getenv();
+
+.gitignore;
+
+seguridad de credenciales.
+
+Cadena consolidada:
+
+.env
+ ↓
+load_dotenv()
+ ↓
+os.getenv("DATABASE_URL")
+ ↓
+DATABASE_URL
+ ↓
+SQLAlchemy
+ ↓
+psycopg
+ ↓
+PostgreSQL
+
+Distinción fundamental:
+
+.env
+ ↓
+configuración fuera del código
+
+.gitignore
+ ↓
+evita que Git rastree .env
+
+Se verificó que la aplicación utiliza correctamente PostgreSQL mediante DATABASE_URL y que .env no aparece como archivo pendiente de seguimiento en Git.
+
+Cadena maestra actual
+
+FastAPI
+    ↓
+SQLAlchemy
+    ↓
+psycopg
+    ↓
+PostgreSQL
+    ↓
+bootcamp_backend
+    ↓
+usuarios / pedidos
+
+Relaciones:
+
+ForeignKey
+    ↓
+relación en BD
+
+relationship()
+    ↓
+relación ORM
+
+join()
+    ↓
+consulta
+
+joinedload() / selectinload()
+    ↓
+estrategia de carga
+
+Transacciones:
+
+db.add()
+db.flush()
+db.commit()
+db.rollback()
+db.refresh()
+
+Estado actual
+
+Día 86 completado.
