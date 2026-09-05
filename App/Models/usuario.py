@@ -14,6 +14,8 @@ class Usuario(Base):
 
     correo = Column(String)
 
+    telefono = Column(String)
+
     pedidos = relationship(
         "Pedido",
         back_populates="usuario"

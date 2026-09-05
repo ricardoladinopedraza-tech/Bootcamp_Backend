@@ -1426,3 +1426,177 @@ db.refresh()
 Estado actual
 
 Día 86 completado.
+
+Día 87 — Alembic: introducción a migraciones
+
+Se estudió por qué create_all() no sustituye un sistema de migraciones.
+
+Alembic permite:
+
+versionar cambios del esquema;
+
+generar migraciones;
+
+aplicar migraciones;
+
+consultar la versión actual de la base de datos;
+
+avanzar mediante upgrade();
+
+retroceder mediante downgrade().
+
+Se instaló:
+
+alembic 1.19.1
+
+Se inicializó:
+
+alembic init alembic
+
+Se configuró alembic.ini para obtener la conexión desde .env.
+
+En env.py se configuró:
+
+load_dotenv()
+database_url = os.getenv("DATABASE_URL")
+config.set_main_option("sqlalchemy.url", database_url)
+
+y:
+
+target_metadata = Base.metadata
+
+Se importaron los modelos Usuario y Pedido para registrar sus tablas en Base.metadata.
+
+Migración inicial
+
+Se generó:
+
+3965e7b974fd_estado_inicial.py
+
+Como PostgreSQL ya tenía la estructura correspondiente a los modelos, la migración inicial no necesitó operaciones estructurales.
+
+Primera migración real
+
+Se agregó al modelo Usuario:
+
+telefono = Column(String)
+
+Alembic detectó:
+
+Detected added column 'usuarios.telefono'
+
+y generó:
+
+d8848d64e7cc_agregar_telefono_a_usuarios.py
+
+La migración contiene:
+
+def upgrade() -> None:
+    op.add_column(
+        'usuarios',
+        sa.Column('telefono', sa.String(), nullable=True)
+    )
+
+def downgrade() -> None:
+    op.drop_column('usuarios', 'telefono')
+
+Cadena:
+
+3965e7b974fd
+       ↓
+d8848d64e7cc (HEAD)
+
+Se ejecutó:
+
+alembic upgrade head
+
+Después:
+
+alembic current
+
+Resultado:
+
+d8848d64e7cc (head)
+
+Finalmente se verificó directamente en PostgreSQL mediante:
+
+\d usuarios
+
+PostgreSQL confirmó:
+
+id       | integer
+nombre   | character varying
+correo   | character varying
+telefono | character varying
+
+La columna telefono existe físicamente y la Foreign Key de pedidos.usuario_id hacia usuarios.id permanece intacta.
+
+Concepto consolidado
+
+create_all()
+    ↓
+crear estructuras inexistentes
+
+Alembic
+    ↓
+evolucionar estructuras existentes
+    ↓
+de forma controlada y versionada
+
+Estado
+
+Día 87 completado.
+
+Cadena maestra actual
+
+FastAPI
+    ↓
+SQLAlchemy
+    ↓
+psycopg
+    ↓
+PostgreSQL
+    ↓
+bootcamp_backend
+    ↓
+usuarios / pedidos
+
+Control del esquema:
+
+Modelos SQLAlchemy
+       ↓
+Alembic
+       ↓
+Migraciones versionadas
+       ↓
+PostgreSQL
+
+Relaciones:
+
+ForeignKey
+    ↓
+relación en BD
+
+relationship()
+    ↓
+relación ORM
+
+join()
+    ↓
+consulta
+
+joinedload() / selectinload()
+    ↓
+estrategia de carga
+
+Transacciones:
+
+db.add()
+db.flush()
+db.commit()
+db.rollback()
+db.refresh()
+
+Estado actual
+
+Día 87 completado.
