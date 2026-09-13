@@ -11,7 +11,7 @@ from App.schemas.pedido import (UsuarioPedidoResponse, PedidoDetalleResponse)
 
 app = FastAPI()
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 
 def get_db():

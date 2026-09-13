@@ -1600,3 +1600,223 @@ db.refresh()
 Estado actual
 
 Día 87 completado.
+
+Día 88 — Migraciones reales
+
+Se agregó ciudad al modelo Usuario:
+
+ciudad = Column(String)
+
+Alembic detectó:
+
+Detected added column 'usuarios.ciudad'
+
+y generó:
+
+47e20a3d7e7f_agregar_ciudad_a_usuarios.py
+
+La migración agregó usuarios.ciudad mediante upgrade() y la elimina mediante downgrade().
+
+Se aplicó:
+
+alembic upgrade head
+
+Se verificó físicamente con:
+
+\d usuarios
+
+La tabla quedó:
+
+id
+nombre
+correo
+telefono
+ciudad
+
+La FK pedidos.usuario_id → usuarios.id permaneció intacta.
+
+Finalmente:
+
+alembic current
+
+mostró:
+
+47e20a3d7e7f (head)
+
+Estado
+
+Día 88 de 112 — COMPLETADO
+
+Día 89 — Migración definitiva SQLite → PostgreSQL
+
+Se migraron los registros reales del Proyecto 1 desde app.db hacia PostgreSQL.
+
+Usuarios:
+
+1 → Ricardo
+2 → Ana
+3 → Ricardo
+
+Pedidos:
+
+1 → laptop  → usuario 1
+2 → mouse   → usuario 1
+3 → teclado → usuario 1
+
+Se conservaron IDs y relaciones.
+
+Se sincronizaron secuencias:
+
+SELECT setval('usuarios_id_seq', 3);
+SELECT setval('pedidos_id_seq', 3);
+
+Se verificó que el siguiente usuario creado recibió id = 4.
+
+Se dejó comentado:
+
+# Base.metadata.create_all(bind=engine)
+
+Día 89 completado.
+
+Día 90 — Repaso PostgreSQL + SQLAlchemy
+
+Se repasaron y consolidaron:
+
+ForeignKey() vs relationship().
+
+pedido.usuario_id vs pedido.usuario.
+
+join() vs joinedload().
+
+selectinload() y N+1.
+
+.all(), .first(), .one(), .one_or_none().
+
+flush(), commit(), rollback(), refresh().
+
+SQLAlchemy vs Pydantic.
+
+create_all() vs Alembic.
+
+secuencias de PostgreSQL.
+
+atomicidad de transacciones.
+
+flujo FastAPI → SQLAlchemy → psycopg → PostgreSQL.
+
+Día 90 completado.
+
+Bloque 3 — Testing
+
+Día 91 — Introducción a Testing
+
+Se inició Testing con pytest.
+
+pytest
+assert
+unit test
+PASS
+FAIL
+pytest.raises()
+
+Se probaron funciones pequeñas y excepciones esperadas.
+
+Día 91 completado.
+
+Día 92 — Testing de Services
+
+Se probaron funciones de lógica de negocio de forma aislada.
+
+Se verificaron:
+
+caso válido;
+
+cantidad cero;
+
+cantidad negativa;
+
+ValueError esperado.
+
+Se consolidó que un test unitario de service debe intentar aislar la lógica de negocio de PostgreSQL.
+
+Día 92 completado.
+
+Día 93 — Testing de endpoints
+
+Se incorporó TestClient.
+
+TestClient
+    ↓
+HTTP request
+    ↓
+FastAPI
+    ↓
+endpoint
+    ↓
+HTTP response
+    ↓
+assert
+
+Se verificaron:
+
+200 correcto;
+
+422 por tipo inválido;
+
+404 por recurso inexistente;
+
+response.json().
+
+Resultado:
+
+4 passed
+
+Día 93 completado.
+
+Día 94 — Tests de CRUD
+
+Se probaron las cuatro operaciones CRUD:
+
+CREATE → POST
+READ   → GET
+UPDATE → PUT
+DELETE → DELETE
+
+Tests realizados:
+
+1. Crear producto
+2. Consultar producto
+3. Consultar producto inexistente
+4. Actualizar producto
+5. Eliminar producto
+6. Verificar que el producto eliminado ya no existe
+
+Resultado:
+
+6 passed
+
+Se identificó un concepto importante: los tests estaban compartiendo una lista mutable en memoria, por lo que el orden podía afectar el estado observado por otros tests.
+
+Regla consolidada:
+
+Idealmente, cada test debe poder ejecutarse de forma independiente.
+
+No se profundizó todavía en fixtures ni aislamiento avanzado para respetar el roadmap.
+
+Día 94 completado.
+
+Estado actual
+
+Día 94 de 112 — COMPLETADO
+
+Progreso del roadmap
+
+Bloque PostgreSQL
+Día 81 → Día 90 ✅ COMPLETADO
+
+Bloque Testing
+Día 91 ✅
+Día 92 ✅
+Día 93 ✅
+Día 94 ✅
+Día 95 ⏳ Testing del Proyecto 1
