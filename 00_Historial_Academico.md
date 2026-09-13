@@ -1820,3 +1820,51 @@ Día 92 ✅
 Día 93 ✅
 Día 94 ✅
 Día 95 ⏳ Testing del Proyecto 1
+
+Día 95 --- Testing del Proyecto 1
+
+Se aplicó testing al Proyecto 1 real manteniendo separada la información
+de producción. Se creó la base PostgreSQL bootcamp_backend_test, una
+conexión exclusiva mediante test_engine y TestingSessionLocal, y se
+usó app.dependency_overrides[get_db] = get_db_override para redirigir
+los endpoints durante pytest.
+
+Se verificó:
+
+TestClient
+    ↓
+FastAPI
+    ↓
+Depends(get_db)
+    ↓
+get_db_override
+    ↓
+TestingSessionLocal
+    ↓
+bootcamp_backend_test
+
+Se crearon las tablas usuarios y pedidos únicamente en la base de
+testing, se insertaron datos controlados, se probó un endpoint real
+GET /usuarios/{id} con respuesta 200, y se comprobó el caso 404
+para un usuario inexistente.
+
+Resultado final: 6 passed.
+
+También se observó que los datos persisten entre ejecuciones y los IDs
+continúan aumentando. Se reconoció la importancia del aislamiento de
+tests, dejando fixtures y limpieza automática para una etapa posterior.
+
+Estado: COMPLETADO.
+
+Estado general
+
+Día actual completado: 95 / 112
+Bloque PostgreSQL: COMPLETADO
+Bloque Testing: Días 91–95 COMPLETADOS
+Próximo: Día 96 — Autenticación vs Autorización
+
+Metodología vigente
+
+Continuar una modificación a la vez: comprender → modificar → ejecutar →
+observar → consolidar. Evitar profundizar fuera del objetivo diario y
+mantener el avance según la ruta de 112 días.

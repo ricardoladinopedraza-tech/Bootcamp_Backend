@@ -1,0 +1,12 @@
+ 00_Historial_Academico.md                          | 50 [32m++++++++++++++[m[31m-[m
+ .../Prueba_dia_94_1/crud.py                        | 31 [31m----------[m
+ .../Prueba_dia_94_1/test_crud.py                   | 63 [31m-------------------[m
+ .../prueba_dia_91/operaciones.py                   |  8 [31m---[m
+ .../prueba_dia_91/test_operaciones.py              | 23 [31m-------[m
+ .../prueba_dia_92/services.py                      |  5 [31m--[m
+ .../prueba_dia_92/test_services.py                 | 14 [31m-----[m
+ .../prueba_dia_93/main.py                          | 18 [31m------[m
+ .../prueba_dia_93/test_main.py                     | 53 [31m----------------[m
+ .../prueba_dia_94/main.py                          | 67 [31m--------------------[m
+ .../prueba_dia_94/test_main.py                     | 71 [31m----------------------[m
+ 11 files changed, 49 insertions(+), 354 deletions(-)
