@@ -1868,3 +1868,147 @@ Metodología vigente
 Continuar una modificación a la vez: comprender → modificar → ejecutar →
 observar → consolidar. Evitar profundizar fuera del objetivo diario y
 mantener el avance según la ruta de 112 días.
+
+Día 96 — Autenticación vs. Autorización — COMPLETADO
+
+Autenticación
+
+Responde: ¿Quién eres?
+
+Está relacionada con la identidad. Sin autenticación válida, el concepto HTTP asociado estudiado es:
+
+401 Unauthorized
+
+Autorización
+
+Responde: ¿Qué puedes hacer?
+
+Está relacionada con permisos y roles. Un usuario puede estar correctamente autenticado pero no tener permiso para una operación:
+
+usuario autenticado
+        ↓
+sin permiso
+        ↓
+403 Forbidden
+
+Concepto central
+
+AUTENTICACIÓN
+      ↓
+¿Quién eres?
+      ↓
+identidad
+
+AUTORIZACIÓN
+      ↓
+¿Qué puedes hacer?
+      ↓
+permisos / roles
+
+Reto final consolidado:
+
+Ana
+JWT válido
+rol = usuario
+DELETE /usuarios/5 requiere admin
+
+Autenticada       → Sí
+Autorizada DELETE → No
+Respuesta         → 403
+
+Si el rol cambia a admin, la autenticación permanece igual; lo que cambia es la autorización.
+
+Estado del Día 96: COMPLETADO Y CONSOLIDADO.
+
+Estado actual
+
+Días completados: 96 / 112
+PostgreSQL:       completado
+Testing:          completado
+Seguridad:        iniciado
+
+Próximos días
+
+Día 97  → Hashing de contraseñas
+Día 98  → Login
+Día 99  → JWT
+Día 100 → JWT + FastAPI: protección de endpoints
+Día 101 → get_current_user
+Día 102 → Roles y permisos
+Día 103 → Seguridad del Proyecto 1
+Día 104 → Docker
+Día 105 → Dockerizar FastAPI
+Día 106 → Docker Compose: FastAPI + PostgreSQL
+Día 107 → Variables de entorno + Docker
+Día 108 → Proyecto 1 dockerizado
+Día 109 → Conceptos de despliegue
+Día 110 → Publicar Proyecto 1
+Día 111 → Proyecto 2
+Día 112 → Cierre, GitHub, README, CV y entrevistas
+
+Día 96 — Autenticación vs. Autorización — COMPLETADO
+
+Autenticación → ¿Quién eres?       → identidad → 401 si no es válida
+Autorización  → ¿Qué puedes hacer? → permisos  → 403 si falta permiso
+
+Se consolidó que autenticación no implica autorización total.
+
+Día 97 — Hashing de contraseñas — COMPLETADO
+
+Se implementó hashing con pwdlib + Argon2.
+
+Se creó App/security.py con:
+
+hash_password(...)
+verify_password(...)
+
+SQLAlchemy:
+
+password_hash = Column(String, nullable=True)
+
+Alembic:
+
+e76e34cf8d6b → agregar password_hash a usuarios
+
+El POST /usuarios ahora realiza:
+
+password → hash_password() → password_hash → PostgreSQL
+
+Se creó UsuarioResponse y se utilizó response_model para evitar exponer el hash.
+
+Comprobación final:
+
+Contraseña original almacenada → NO
+Hash Argon2 almacenado          → SÍ
+Hash expuesto por la API        → NO
+
+También se detectó que PowerShell no está resolviendo correctamente los ejecutables del venv aunque muestre (venv). El entorno está sano y temporalmente se usan rutas explícitas:
+
+.\venv\Scripts\python.exe -m uvicorn App.main:app --reload
+.\venv\Scripts\alembic.exe ...
+.\venv\Scripts\python.exe -m pip ...
+
+Estado
+
+Días completados: 97 / 112
+PostgreSQL:       COMPLETADO
+Testing:          COMPLETADO
+Seguridad:        Días 96–97 completados
+
+Próximos días
+
+Día 98  → Login
+Día 99  → JWT
+Día 100 → JWT + FastAPI
+Día 101 → get_current_user
+Día 102 → Roles y permisos
+Día 103 → Seguridad Proyecto 1
+Día 104 → Docker
+Día 105 → Dockerizar FastAPI
+Día 106 → Docker Compose
+Día 107 → Variables de entorno + Docker
+Día 108 → Proyecto 1 dockerizado
+Día 109 → Deploy: conceptos
+Día 110 → Publicar Proyecto 1
+Día 111 → Proyecto 2
+Día 112 → Cierre, GitHub, README, CV e entrevistas

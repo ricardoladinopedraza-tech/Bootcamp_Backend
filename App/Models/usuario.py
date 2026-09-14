@@ -5,7 +5,6 @@ from App.database.database import Base
 
 
 class Usuario(Base):
-
     __tablename__ = "usuarios"
 
     id = Column(Integer, primary_key=True)
@@ -17,6 +16,8 @@ class Usuario(Base):
     telefono = Column(String)
 
     ciudad = Column(String)
+
+    password_hash = Column(String, nullable=True)
 
     pedidos = relationship(
         "Pedido",

@@ -6,8 +6,11 @@ from sqlalchemy.orm import Session, selectinload
 from App.database.database import Base, engine, SessionLocal
 from App.models.usuario import Usuario
 from App.models.pedido import Pedido
-from App.schemas.usuario import UsuarioActualizar
+from App.schemas.usuario import UsuarioActualizar, UsuarioResponse
+#from App.schemas.usuario import UsuarioActualizar
 from App.schemas.pedido import (UsuarioPedidoResponse, PedidoDetalleResponse)
+
+from App.security import hash_password
 
 app = FastAPI()
 
@@ -23,21 +26,21 @@ def get_db():
         db.close()
 
 
-@app.post("/usuarios")
+@app.post("/usuarios", response_model=UsuarioResponse)
 def crear_usuario(
     nombre: str,
     correo: str,
+    password: str,
     db: Session = Depends(get_db)
 ):
     nuevo_usuario = Usuario(
         nombre=nombre,
-        correo=correo
+        correo=correo,
+        password_hash=hash_password(password)
     )
 
     db.add(nuevo_usuario)
-
     db.commit()
-
     db.refresh(nuevo_usuario)
 
     return nuevo_usuario
