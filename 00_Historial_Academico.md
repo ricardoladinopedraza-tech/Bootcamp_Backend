@@ -2012,3 +2012,75 @@ Día 109 → Deploy: conceptos
 Día 110 → Publicar Proyecto 1
 Día 111 → Proyecto 2
 Día 112 → Cierre, GitHub, README, CV e entrevistas
+
+Día 98 — Login — COMPLETADO
+
+Se creó:
+
+class LoginRequest(BaseModel):
+    correo: str
+    password: str
+
+Consulta:
+
+usuario = db.query(Usuario).filter(
+    Usuario.correo == data.correo
+).first()
+
+Protección:
+
+if usuario is None or usuario.password_hash is None:
+    raise HTTPException(
+        status_code=401,
+        detail="Credenciales incorrectas"
+    )
+
+Verificación:
+
+if not verify_password(
+    data.password,
+    usuario.password_hash
+):
+    raise HTTPException(
+        status_code=401,
+        detail="Credenciales incorrectas"
+    )
+
+Respuesta temporal de éxito:
+
+{"mensaje": "Login correcto"}
+
+Pruebas verificadas:
+
+Correo válido + password correcta       → Login correcto
+Correo válido + password incorrecta     → 401
+Usuario antiguo con password_hash NULL  → 401
+Correo inexistente                      → 401 por diseño
+
+Se consolidó que Credenciales incorrectas evita revelar si una cuenta concreta existe.
+
+Estado actual
+
+Días completados: 98 / 112
+PostgreSQL 81–90 → COMPLETADO
+Testing    91–95 → COMPLETADO
+Seguridad  96–98 → COMPLETADO hasta Día 98
+
+Restan 14 días del plan.
+
+Próximos días
+
+Día 99  → JWT
+Día 100 → JWT + FastAPI: proteger endpoints
+Día 101 → get_current_user
+Día 102 → Roles y permisos
+Día 103 → Seguridad Proyecto 1
+Día 104 → Docker
+Día 105 → Dockerizar FastAPI
+Día 106 → Docker Compose
+Día 107 → Variables de entorno + Docker
+Día 108 → Proyecto 1 dockerizado
+Día 109 → Deploy: conceptos
+Día 110 → Publicar Proyecto 1
+Día 111 → Proyecto 2
+Día 112 → Cierre, GitHub, README, documentación, CV e entrevistas

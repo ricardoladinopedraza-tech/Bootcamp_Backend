@@ -6,11 +6,14 @@ from sqlalchemy.orm import Session, selectinload
 from App.database.database import Base, engine, SessionLocal
 from App.models.usuario import Usuario
 from App.models.pedido import Pedido
-from App.schemas.usuario import UsuarioActualizar, UsuarioResponse
+from App.schemas.usuario import UsuarioActualizar, UsuarioResponse, LoginRequest
+#from App.schemas.usuario import UsuarioActualizar, UsuarioResponse
 #from App.schemas.usuario import UsuarioActualizar
 from App.schemas.pedido import (UsuarioPedidoResponse, PedidoDetalleResponse)
 
-from App.security import hash_password
+
+from App.security import hash_password, verify_password
+#from App.security import hash_password
 
 app = FastAPI()
 
@@ -301,6 +304,32 @@ def obtener_pedido(
         )
 
     return pedido
+
+@app.post("/login")
+def login(
+    data: LoginRequest,
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.correo == data.correo
+    ).first()
+
+    if usuario is None or usuario.password_hash is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Credenciales incorrectas"
+        )
+
+    if not verify_password(
+        data.password,
+        usuario.password_hash
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Credenciales incorrectas"
+        )
+
+    return {"mensaje": "Login correcto"}
 
 
 
