@@ -11,11 +11,19 @@ from App.schemas.usuario import UsuarioActualizar, UsuarioResponse, LoginRequest
 #from App.schemas.usuario import UsuarioActualizar
 from App.schemas.pedido import (UsuarioPedidoResponse, PedidoDetalleResponse)
 
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from App.security import hash_password, verify_password
-#from App.security import hash_password
+import jwt
+
+from App.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    decode_access_token
+)
 
 app = FastAPI()
+security = HTTPBearer()
 
 #Base.metadata.create_all(bind=engine)
 
@@ -50,8 +58,24 @@ def crear_usuario(
 
 
 @app.get("/usuarios")
-def listar_usuarios(db: Session = Depends(get_db)):
+def listar_usuarios(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+):
+
+    token = credentials.credentials
+
+    try:
+        decode_access_token(token)
+
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido o expirado"
+        )
+
     usuarios = db.query(Usuario).all()
+
     return usuarios
 
 
@@ -329,7 +353,32 @@ def login(
             detail="Credenciales incorrectas"
         )
 
-    return {"mensaje": "Login correcto"}
+    access_token = create_access_token(
+    {"sub": str(usuario.id)}
+)
 
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
+@app.get("/protegido")
+def endpoint_protegido(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    token = credentials.credentials
+
+    try:
+        payload = decode_access_token(token)
+
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido o expirado"
+        )
+
+    return {
+        "mensaje": "Acceso permitido",
+        "sub": payload["sub"]
+    }
 

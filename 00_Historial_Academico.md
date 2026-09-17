@@ -2084,3 +2084,138 @@ Día 109 → Deploy: conceptos
 Día 110 → Publicar Proyecto 1
 Día 111 → Proyecto 2
 Día 112 → Cierre, GitHub, README, documentación, CV e entrevistas
+
+Día 99 — JWT — COMPLETADO
+
+Se instaló PyJWT 2.14.0.
+
+En App/security.py:
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = "HS256"
+create_access_token(...)
+decode_access_token(...)
+
+La clave permanece en .env. Se corrigió una clave inicial demasiado corta tras InsecureKeyLengthWarning, generando una nueva con secrets.token_hex(32). La longitud comprobada de la cadena fue 64 bytes UTF-8.
+
+El token incorpora:
+
+sub → ID del usuario
+exp → instante de expiración
+
+Expiración configurada a 30 minutos.
+
+Se comprobó un token expirado:
+
+ExpiredSignatureError: Signature has expired
+
+POST /login ahora devuelve:
+
+{
+  "access_token": "...",
+  "token_type": "bearer"
+}
+
+Verificación final del token generado:
+
+{'sub': '6', 'exp': 1789605350}
+
+Nota de entorno vigente
+
+PowerShell puede mostrar (venv) aunque algunos comandos resuelvan el Python global. El venv está sano; cuando sea necesario se usan rutas explícitas:
+
+.\venv\Scripts\python.exe -m uvicorn App.main:app --reload
+.\venv\Scripts\python.exe -m pip ...
+.\venv\Scripts\alembic.exe ...
+
+Estado actual
+
+Completados: 99 / 112
+Restantes:   13
+
+
+Día 100 — JWT + FastAPI — COMPLETADO
+
+Se incorporaron:
+
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import jwt
+
+security = HTTPBearer()
+
+Conceptos:
+
+HTTPBearer
+→ busca/extrae credenciales Bearer
+
+decode_access_token()
+→ verifica JWT
+→ firma + expiración
+→ payload
+
+Práctica /protegido:
+
+sin credenciales → 401
+JWT válido        → 200
+
+Se diagnosticó:
+
+jwt.exceptions.DecodeError: Not enough segments
+
+Un token mal formado inicialmente provocó 500 porque la excepción no estaba manejada.
+
+Corrección:
+
+try:
+    decode_access_token(token)
+except jwt.PyJWTError:
+    raise HTTPException(
+        status_code=401,
+        detail="Token inválido o expirado"
+    )
+
+Resultados:
+
+JWT inválido/expirado → 401
+JWT válido            → 200
+
+Se protegió el endpoint real GET /usuarios.
+
+Flujo:
+
+GET /usuarios
+→ Depends(security)
+→ credentials.credentials
+→ decode_access_token()
+→ inválido: 401
+→ válido: consultar PostgreSQL
+→ 200
+
+Pruebas finales:
+
+/usuarios sin autorización → 401
+/usuarios con JWT válido    → 200
+
+Distinción consolidada:
+
+HTTPBearer se encarga de buscar el header de autorización y obliga a presentar credenciales, mientras que decode_access_token() se encarga de verificar el JWT.
+
+Estado
+
+Completados: 100 / 112
+Restantes:    12
+
+Próximos días
+
+101 → get_current_user
+102 → roles y permisos admin/user
+103 → seguridad Proyecto 1
+104 → Docker
+105 → Dockerizar FastAPI
+106 → Docker Compose
+107 → variables de entorno + Docker
+108 → Proyecto 1 dockerizado
+109 → despliegue
+110 → publicar Proyecto 1
+111 → Proyecto 2
+112 → cierre, GitHub, README, CV e entrevistas
