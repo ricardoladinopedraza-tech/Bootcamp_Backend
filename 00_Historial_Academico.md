@@ -2219,3 +2219,57 @@ Próximos días
 110 → publicar Proyecto 1
 111 → Proyecto 2
 112 → cierre, GitHub, README, CV e entrevistas
+
+## Día 101 — get_current_user
+Se creó una dependencia reutilizable que:
+```text
+HTTPBearer
+→ obtiene JWT
+→ decode_access_token()
+→ obtiene sub
+→ busca Usuario en PostgreSQL
+→ devuelve objeto ORM
+→ current_user
+```
+
+Se incorporó `db: Session = Depends(get_db)` y la búsqueda:
+```python
+usuario_id = payload["sub"]
+usuario = db.query(Usuario).filter(
+    Usuario.id == int(usuario_id)
+).first()
+```
+
+Si el usuario no existe:
+```python
+if usuario is None:
+    raise HTTPException(status_code=401, detail="Usuario no válido")
+```
+
+`GET /usuarios` quedó usando:
+```python
+current_user: Usuario = Depends(get_current_user)
+```
+
+Pruebas:
+```text
+sin autorización → 401
+JWT válido        → 200
+```
+
+Se creó `GET /mi-perfil`. Con el JWT cuyo `sub` era `"6"`, devolvió `id = 6`, confirmando:
+```text
+JWT → sub → PostgreSQL → Usuario → current_user
+```
+
+Distinción consolidada:
+```text
+credentials.credentials → JWT completo
+payload["sub"]           → ID extraído
+current_user             → objeto Usuario
+```
+
+## Estado
+```text
+Completados: 101 / 112
+Restantes:    11

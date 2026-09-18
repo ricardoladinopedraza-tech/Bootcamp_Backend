@@ -25,6 +25,8 @@ from App.security import (
 app = FastAPI()
 security = HTTPBearer()
 
+
+
 #Base.metadata.create_all(bind=engine)
 
 
@@ -35,6 +37,35 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+):
+    token = credentials.credentials
+
+    try:
+        payload = decode_access_token(token)
+
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido o expirado"
+        )
+
+    usuario_id = payload["sub"]
+
+    usuario = db.query(Usuario).filter(
+        Usuario.id == int(usuario_id)
+    ).first()
+
+    if usuario is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Usuario no válido"
+        )
+
+    return usuario
 
 
 @app.post("/usuarios", response_model=UsuarioResponse)
@@ -59,23 +90,10 @@ def crear_usuario(
 
 @app.get("/usuarios")
 def listar_usuarios(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    current_user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-
-    token = credentials.credentials
-
-    try:
-        decode_access_token(token)
-
-    except jwt.PyJWTError:
-        raise HTTPException(
-            status_code=401,
-            detail="Token inválido o expirado"
-        )
-
     usuarios = db.query(Usuario).all()
-
     return usuarios
 
 
@@ -382,3 +400,12 @@ def endpoint_protegido(
         "sub": payload["sub"]
     }
 
+@app.get("/mi-perfil")
+def mi_perfil(
+    current_user: Usuario = Depends(get_current_user)
+):
+    return {
+        "id": current_user.id,
+        "nombre": current_user.nombre,
+        "correo": current_user.correo
+    }
