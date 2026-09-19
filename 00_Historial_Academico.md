@@ -2273,3 +2273,31 @@ current_user             → objeto Usuario
 ```text
 Completados: 101 / 112
 Restantes:    11
+
+Día 102 — resumen
+
+Se agregó rol = Column(String, nullable=False, default="user"). Alembic migró de forma segura los usuarios existentes: columna temporalmente nullable → UPDATE a user → NOT NULL. Revisión: e76e34cf8d6b → 56acf0546194.
+
+Se comprobó que un usuario nuevo sin rol explícito queda como user, evitando que el cliente controle privilegios.
+
+Se detectó y corrigió una exposición de password_hash en GET /usuarios mediante:
+
+response_model=list[UsuarioResponse]
+
+Se prepararon dos usuarios:
+
+id=6 → user
+id=7 → admin
+
+Se creó require_admin() sobre get_current_user():
+
+HTTPBearer → JWT → get_current_user → Usuario → require_admin → endpoint
+
+Resultados reales:
+
+id=6 user  + JWT válido → DELETE /usuarios/5 → 403
+id=7 admin + JWT válido → DELETE /usuarios/5 → 200
+
+PostgreSQL confirmó que el usuario 5 fue eliminado (0 rows).
+
+Se consolidó que el JWT identifica mediante sub, mientras el rol actual se obtiene de PostgreSQL. Cambiar admin → user cambia autorización, no identidad.

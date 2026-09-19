@@ -67,6 +67,17 @@ def get_current_user(
 
     return usuario
 
+def require_admin(
+    current_user: Usuario = Depends(get_current_user)
+):
+    if current_user.rol != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="No tienes permisos suficientes"
+        )
+
+    return current_user
+
 
 @app.post("/usuarios", response_model=UsuarioResponse)
 def crear_usuario(
@@ -88,7 +99,7 @@ def crear_usuario(
     return nuevo_usuario
 
 
-@app.get("/usuarios")
+@app.get("/usuarios", response_model=list[UsuarioResponse])
 def listar_usuarios(
     current_user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -176,6 +187,7 @@ def actualizar_usuario(
 @app.delete("/usuarios/{usuario_id}")
 def eliminar_usuario(
     usuario_id: int,
+    current_user: Usuario = Depends(require_admin),
     db: Session = Depends(get_db)
 ):
     usuario = db.query(Usuario).filter(

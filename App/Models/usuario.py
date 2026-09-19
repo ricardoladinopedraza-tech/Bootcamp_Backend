@@ -19,6 +19,8 @@ class Usuario(Base):
 
     password_hash = Column(String, nullable=True)
 
+    rol = Column(String, nullable=False, default="user")
+
     pedidos = relationship(
         "Pedido",
         back_populates="usuario"
