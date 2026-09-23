@@ -2301,3 +2301,147 @@ id=7 admin + JWT válido → DELETE /usuarios/5 → 200
 PostgreSQL confirmó que el usuario 5 fue eliminado (0 rows).
 
 Se consolidó que el JWT identifica mediante sub, mientras el rol actual se obtiene de PostgreSQL. Cambiar admin → user cambia autorización, no identidad.
+
+Día 103 — Seguridad del Proyecto 1
+
+Auditoría e integración
+
+Se realizó una auditoría práctica de seguridad sobre el Proyecto 1 completo.
+
+Integridad de correo
+
+Se agregó unique=True al correo del modelo y se creó/aplicó la migración Alembic 37e09c3bcc17.
+
+PostgreSQL quedó con la restricción usuarios_correo_key.
+
+El registro devuelve 409 Conflict para correo existente.
+
+get_current_user endurecido
+
+Se controlan:
+
+JWT inválido/expirado.
+
+sub ausente.
+
+sub no convertible a entero.
+
+usuario inexistente.
+
+Todos estos casos terminan de forma controlada en 401.
+
+PATCH duplicado detectado
+
+Uvicorn mostró Duplicate Operation ID. Se descubrieron dos PATCH /usuarios/{usuario_id}: uno con autorización y otro con actualización.
+
+Se fusionaron en un único endpoint.
+
+Política de actualización
+
+Usuario normal modifica su propia cuenta.
+
+Usuario normal no modifica otras cuentas → 403.
+
+Admin puede modificar otras cuentas.
+
+Response models
+
+Se corrigieron respuestas que exponían password_hash y rol.
+
+Se añadieron/utilizaron:
+
+UsuarioResponse
+
+PedidoResponse
+
+UsuarioConPedidosResponse
+
+También se mantuvieron los schemas seguros para pedidos y usuarios anidados.
+
+Cambio de contraseña
+
+UsuarioActualizar admite contraseña opcional.
+
+La contraseña recibida se procesa con hash_password() y se guarda únicamente como password_hash.
+
+Pruebas:
+
+nueva contraseña → login 200
+
+contraseña anterior → login 401
+
+Correo duplicado en PATCH
+
+PostgreSQL generaba IntegrityError y la API respondía inicialmente 500.
+
+Se agregó:
+
+try/except IntegrityError
+
+db.rollback()
+
+409 Conflict
+
+Resultado: correo duplicado → 409 "Correo ya registrado".
+
+Seguridad de pedidos
+
+POST /pedidos dejó de aceptar usuario_id elegido por el cliente.
+
+Ahora requiere usuario autenticado y utiliza:
+
+usuario_id=current_user.id
+
+Prueba real: JWT del usuario 6 creó pedido Monitor con usuario_id=6.
+
+Recuperación de endpoint
+
+Los tests detectaron que había desaparecido GET /usuarios/{usuario_id}.
+
+El síntoma era 405 Method Not Allowed.
+
+Se restauró con response_model=UsuarioResponse.
+
+Testing final
+
+La base de testing tenía esquema antiguo. create_all() no agregó columnas nuevas a tablas existentes, reforzando la diferencia entre create_all() y Alembic.
+
+Después se detectó persistencia de correos de ejecuciones anteriores y colisión con la nueva restricción UNIQUE.
+
+Con base de testing limpia:
+
+6 passed
+
+Pendiente consciente: los tests aún no están totalmente aislados entre ejecuciones; fixtures/limpieza automática quedan como mejora posterior.
+
+Resultado Día 103
+
+Seguridad del Proyecto 1 integrada y comprobada:
+
+autenticación
+
+autorización
+
+roles
+
+JWT
+
+hashing
+
+cambio de contraseña
+
+protección de respuestas
+
+integridad UNIQUE
+
+rollback
+
+ownership en creación de pedidos
+
+debugging de rutas duplicadas
+
+recuperación de funcionalidad mediante tests
+
+6/6 tests aprobados con base limpia
+
+Estado: Día 103 completado.

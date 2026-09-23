@@ -2,11 +2,12 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import and_
 #from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.exc import IntegrityError
 
 from App.database.database import Base, engine, SessionLocal
 from App.models.usuario import Usuario
 from App.models.pedido import Pedido
-from App.schemas.usuario import UsuarioActualizar, UsuarioResponse, LoginRequest
+from App.schemas.usuario import UsuarioActualizar, UsuarioResponse, UsuarioConPedidosResponse, LoginRequest
 #from App.schemas.usuario import UsuarioActualizar, UsuarioResponse
 #from App.schemas.usuario import UsuarioActualizar
 from App.schemas.pedido import (UsuarioPedidoResponse, PedidoDetalleResponse)
@@ -46,17 +47,16 @@ def get_current_user(
 
     try:
         payload = decode_access_token(token)
+        usuario_id = int(payload["sub"])
 
-    except jwt.PyJWTError:
+    except (jwt.PyJWTError, KeyError, ValueError, TypeError):
         raise HTTPException(
             status_code=401,
             detail="Token inválido o expirado"
         )
 
-    usuario_id = payload["sub"]
-
     usuario = db.query(Usuario).filter(
-        Usuario.id == int(usuario_id)
+        Usuario.id == usuario_id
     ).first()
 
     if usuario is None:
@@ -86,6 +86,16 @@ def crear_usuario(
     password: str,
     db: Session = Depends(get_db)
 ):
+    usuario_existente = db.query(Usuario).filter(
+        Usuario.correo == correo
+    ).first()
+
+    if usuario_existente:
+        raise HTTPException(
+            status_code=409,
+            detail="Correo ya registrado"
+        )
+
     nuevo_usuario = Usuario(
         nombre=nombre,
         correo=correo,
@@ -98,28 +108,10 @@ def crear_usuario(
 
     return nuevo_usuario
 
-
-@app.get("/usuarios", response_model=list[UsuarioResponse])
-def listar_usuarios(
-    current_user: Usuario = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    usuarios = db.query(Usuario).all()
-    return usuarios
-
-
-@app.get("/usuarios/con-pedidos")
-def usuarios_con_pedidos(
-    db: Session = Depends(get_db)
-):
-    usuarios = db.query(Usuario).options(
-        selectinload(Usuario.pedidos)
-    ).all()
-
-    return usuarios
-
-
-@app.get("/usuarios/{usuario_id}")
+@app.get(
+    "/usuarios/{usuario_id}",
+    response_model=UsuarioResponse
+)
 def obtener_usuario(
     usuario_id: int,
     db: Session = Depends(get_db)
@@ -136,27 +128,45 @@ def obtener_usuario(
 
     return usuario
 
-
-@app.get("/usuarios/buscar/{nombre}")
-def buscar_usuario(
-    nombre: str,
+@app.get("/usuarios", response_model=list[UsuarioResponse])
+def listar_usuarios(
+    current_user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    usuarios = db.query(Usuario).filter(
-        and_(
-            Usuario.nombre.contains(nombre),
-            Usuario.id > 1
-        )
+    usuarios = db.query(Usuario).all()
+    return usuarios
+
+
+@app.get(
+    "/usuarios/con-pedidos",
+    response_model=list[UsuarioConPedidosResponse]
+)
+def usuarios_con_pedidos(
+    db: Session = Depends(get_db)
+):
+    usuarios = db.query(Usuario).options(
+        selectinload(Usuario.pedidos)
     ).all()
 
     return usuarios
 
-@app.patch("/usuarios/{usuario_id}")
+
+@app.patch(
+    "/usuarios/{usuario_id}",
+    response_model=UsuarioResponse
+)
 def actualizar_usuario(
     usuario_id: int,
     datos: UsuarioActualizar,
+    current_user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    if current_user.id != usuario_id and current_user.rol != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="No tienes permisos para modificar este usuario"
+        )
+
     usuario = db.query(Usuario).filter(
         Usuario.id == usuario_id
     ).first()
@@ -169,20 +179,45 @@ def actualizar_usuario(
 
     datos_actualizados = datos.model_dump(
     exclude_unset=True
-)
+    )
 
     for campo, valor in datos_actualizados.items():
-        setattr(usuario, campo, valor)
+        if campo == "password":
+            usuario.password_hash = hash_password(valor)
+        else:
+            setattr(usuario, campo, valor)
 
-    db.commit()
+    try:
+        db.commit()
+
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Correo ya registrado"
+        )
 
     db.refresh(usuario)
 
     return usuario
 
 
+@app.get(
+    "/usuarios/buscar/{nombre}",
+    response_model=list[UsuarioResponse]
+)
+def buscar_usuario(
+    nombre: str,
+    db: Session = Depends(get_db)
+):
+    usuarios = db.query(Usuario).filter(
+        and_(
+            Usuario.nombre.contains(nombre),
+            Usuario.id > 1
+        )
+    ).all()
 
-
+    return usuarios
 
 @app.delete("/usuarios/{usuario_id}")
 def eliminar_usuario(
@@ -211,12 +246,12 @@ def eliminar_usuario(
 @app.post("/pedidos")
 def crear_pedido(
     producto: str,
-    usuario_id: int,
+    current_user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     nuevo_pedido = Pedido(
         producto=producto,
-        usuario_id=usuario_id
+        usuario_id=current_user.id
     )
 
     db.add(nuevo_pedido)
@@ -254,7 +289,8 @@ def detalle_pedidos(db: Session = Depends(get_db)):
         }
         for producto, nombre in resultados
     ]
-'''
+
+
 @app.get(
     "/usuarios/{usuario_id}/pedidos",
     response_model=list[UsuarioPedidoResponse]
@@ -274,56 +310,8 @@ def obtener_pedidos_usuario(
         )
 
     return usuario.pedidos
-'''
-@app.get(
-    "/usuarios/{usuario_id}/pedidos",
-    response_model=list[UsuarioPedidoResponse]
-)
-def obtener_pedidos_usuario(
-    usuario_id: int,
-    db: Session = Depends(get_db)
-):
-    usuario = db.query(Usuario).filter(
-        Usuario.id == usuario_id
-    ).first()
-
-    if not usuario:
-        raise HTTPException(
-            status_code=404,
-            detail="Usuario no encontrado"
-        )
-
-    return usuario.pedidos
-
-'''
-#Endpoint sin joinedload
-@app.get(
-    "/pedidos/detalle-orm",
-    response_model=list[PedidoDetalleResponse]
-)
-def obtener_pedidos_detalle_orm(
-    db: Session = Depends(get_db)
-):
-    pedidos = db.query(Pedido).all()
-
-    return pedidos
 
 
-#Endpoint con joinedload()
-@app.get(
-    "/pedidos/detalle-orm",
-    response_model=list[PedidoDetalleResponse]
-)
-def obtener_pedidos_detalle_orm(
-    db: Session = Depends(get_db)
-):
-    pedidos = db.query(Pedido).options(
-        joinedload(Pedido.usuario)
-    ).all()
-
-    return pedidos
-'''
-#Endpoint con selectinload()
 @app.get(
     "/pedidos/detalle-orm",
     response_model=list[PedidoDetalleResponse]

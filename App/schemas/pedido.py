@@ -19,3 +19,12 @@ class PedidoDetalleResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class PedidoResponse(BaseModel):
+    id: int
+    producto: str
+    usuario_id: int
+
+    model_config = {
+        "from_attributes": True
+    }

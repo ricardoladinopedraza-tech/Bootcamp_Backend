@@ -11,7 +11,7 @@ class Usuario(Base):
 
     nombre = Column(String)
 
-    correo = Column(String)
+    correo = Column(String, unique=True)
 
     telefono = Column(String)
 
