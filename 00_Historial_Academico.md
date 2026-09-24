@@ -2445,3 +2445,76 @@ recuperación de funcionalidad mediante tests
 6/6 tests aprobados con base limpia
 
 Estado: Día 103 completado.
+
+Día 104 — Docker: imágenes, contenedores y Dockerfile
+
+Se inició el bloque Docker.
+
+Entorno preparado
+
+WSL 2                  ✅
+Ubuntu sobre WSL 2     ✅
+Docker Desktop         ✅
+Docker CLI             ✅
+Docker Engine          ✅
+
+Se verificó mediante:
+
+docker --version
+docker info
+
+Práctica hello-world
+
+Se ejecutó:
+
+docker run hello-world
+
+Se estudiaron:
+
+docker images
+docker ps
+docker ps -a
+
+Se comprobó que una imagen puede crear varios contenedores y que un contenedor cuyo proceso terminó aparece como Exited (0).
+
+Primera imagen propia
+
+Se creó:
+
+practica_docker_104/
+├── Dockerfile
+└── saludo.py
+
+Dockerfile:
+
+FROM python:3.13-slim
+WORKDIR /app
+COPY saludo.py .
+CMD ["python", "saludo.py"]
+
+Se construyó:
+
+docker build -t saludo-docker .
+
+y se ejecutó:
+
+docker run saludo-docker
+
+Resultado correcto:
+
+Hola desde mi primer contenedor Docker
+
+Experimento de reconstrucción
+
+Se modificó saludo.py después del build. Un nuevo docker run siguió usando el contenido antiguo de la imagen. Tras un nuevo docker build, el contenedor mostró el cambio.
+
+Concepto consolidado:
+
+Dockerfile → docker build → Imagen → docker run → Contenedor
+
+Diferencia:
+
+docker build → construye una imagen
+docker run   → crea y ejecuta un contenedor desde una imagen
+
+Un cambio en el código fuente no modifica automáticamente una imagen ya construida.
