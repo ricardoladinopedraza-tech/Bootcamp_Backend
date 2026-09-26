@@ -7,5 +7,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY App ./App
+COPY alembic ./alembic
+COPY alembic.ini .
 
 CMD ["uvicorn", "App.main:app", "--host", "0.0.0.0", "--port", "8000"]

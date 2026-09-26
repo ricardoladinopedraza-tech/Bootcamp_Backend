@@ -2558,3 +2558,71 @@ Aprendizajes
 Estado actual
 FastAPI    → Docker
 PostgreSQL → Windows
+
+Día 106 — Docker Compose: FastAPI + PostgreSQL
+Arquitectura alcanzada
+Windows / navegador
+        ↓ localhost:8000
+FastAPI container
+        ↓ db:5432
+PostgreSQL 17 container
+        ↓
+postgres_data
+Trabajo realizado
+- Docker Compose verificado.
+- Servicios api y db definidos.
+- PostgreSQL utiliza image: postgres:17.
+- FastAPI utiliza build: ..
+- Variables PostgreSQL tomadas de .env.
+- Puerto PostgreSQL Docker publicado como 5433:5432.
+- Comunicación interna API → DB mediante db:5432.
+- Volumen nombrado postgres_data.
+- healthcheck con pg_isready.
+- depends_on con condition: service_healthy.
+Alembic en Docker
+El Dockerfile fue ampliado para copiar alembic/ y alembic.ini.
+Se descubrió que la migración raíz 3965e7b974fd estaba vacía. Esto impedía reconstruir el esquema en una PostgreSQL nueva.
+Se reparó la migración inicial con el esquema histórico:
+usuarios: id, nombre, correo
+pedidos: id, producto, usuario_id → usuarios.id
+Las columnas y restricciones posteriores quedaron bajo responsabilidad de sus migraciones correspondientes.
+Cadena completa:
+3965e7b974fd
+→ d8848d64e7cc
+→ 47e20a3d7e7f
+→ e76e34cf8d6b
+→ 56acf0546194
+→ 37e09c3bcc17 (HEAD)
+alembic upgrade head funcionó desde una base completamente vacía.
+Tablas resultantes:
+alembic_version
+pedidos
+usuarios
+Aprendizaje: esquema vs datos
+La nueva usuarios contenía 0 registros.
+Alembic migra esquema ≠ copiar datos desde otra base
+PostgreSQL Windows y PostgreSQL Docker son instancias independientes.
+Validación API
+Antes de las migraciones:
+GET /usuarios/1 → 500 UndefinedTable
+Después:
+GET /usuarios/1 → 404
+El cambio confirmó que la consulta ya podía ejecutarse correctamente.
+Se creó mediante la API un usuario de prueba en PostgreSQL Docker.
+Persistencia comprobada
+Se ejecutó:
+docker compose down
+docker compose up -d
+Los contenedores fueron eliminados y recreados, pero el registro permaneció gracias a postgres_data.
+Concepto consolidado:
+contenedor ≠ almacenamiento persistente
+Evaluación conceptual
+El estudiante explicó correctamente:
+- por qué la API usa db:5432;
+- diferencia entre image y build;
+- finalidad de healthcheck + depends_on;
+- diferencia entre migrar esquema y migrar datos;
+- persistencia mediante volúmenes.
+Estado al cierre
+Componentes integrados hasta ahora:
+FastAPI, Pydantic, SQLAlchemy, PostgreSQL, psycopg, Alembic, pytest/TestClient, Argon2, login, JWT, autenticación, autorización por roles, Docker, Docker Compose y volúmenes persistentes.
