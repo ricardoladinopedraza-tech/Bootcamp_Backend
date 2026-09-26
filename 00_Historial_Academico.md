@@ -2518,3 +2518,43 @@ docker build → construye una imagen
 docker run   → crea y ejecuta un contenedor desde una imagen
 
 Un cambio en el código fuente no modifica automáticamente una imagen ya construida.
+
+Día 105 — Dockerizar FastAPI
+Se creó el Dockerfile del Proyecto 1 con python:3.13-slim, /app, copia de requirements.txt, instalación de dependencias, copia de App/ y arranque de Uvicorn en 0.0.0.0:8000.
+Se construyó correctamente:
+docker build -t bootcamp-fastapi .
+Se consolidó:
+RUN → se ejecuta durante docker build
+CMD → se ejecuta al arrancar el contenedor
+El venv de Windows no se copia; el entorno Linux de la imagen instala sus propias dependencias.
+Ejecución y puertos
+Se publicó:
+-p 8000:8000
+   host : contenedor
+docker ps confirmó el contenedor en estado Up y Swagger fue accesible desde Windows.
+Variables de entorno
+El primer arranque sin variables produjo DATABASE_URL=None. Se mantuvo .env fuera de la imagen y se cargó en tiempo de ejecución con --env-file.
+PostgreSQL
+GET /usuarios/1 falló inicialmente porque localhost:5432 desde el contenedor apuntaba al propio contenedor, mientras PostgreSQL seguía en Windows.
+Para la arquitectura temporal del Día 105 se utilizó host.docker.internal:5432, sobrescribiendo DATABASE_URL únicamente para el contenedor y sin modificar el .env original.
+La prueba final GET /usuarios/1 devolvió 200 OK desde la base PostgreSQL real.
+Arquitectura alcanzada:
+Navegador Windows
+→ puerto 8000
+→ contenedor FastAPI
+→ SQLAlchemy / psycopg
+→ host.docker.internal:5432
+→ PostgreSQL en Windows
+Aprendizajes
+- Imagen y contenedor.
+- Dockerfile aplicado a FastAPI.
+- RUN vs CMD.
+- Dependencias del contenedor vs venv de Windows.
+- Publicación de puertos.
+- Uvicorn en 0.0.0.0.
+- Variables suministradas en ejecución.
+- localhost del contenedor vs host Windows.
+- Diagnóstico de errores de Docker, configuración y conexión a base de datos.
+Estado actual
+FastAPI    → Docker
+PostgreSQL → Windows
