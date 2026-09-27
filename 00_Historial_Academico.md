@@ -2626,3 +2626,47 @@ El estudiante explicó correctamente:
 Estado al cierre
 Componentes integrados hasta ahora:
 FastAPI, Pydantic, SQLAlchemy, PostgreSQL, psycopg, Alembic, pytest/TestClient, Argon2, login, JWT, autenticación, autorización por roles, Docker, Docker Compose y volúmenes persistentes.
+
+Día 107 — Variables de entorno + Docker
+Flujo estudiado
+.env → Docker Compose → variables runtime → contenedor → Python
+.env y contenedores
+Se comprobó que una variable en .env no aparece automáticamente en todos los servicios:
+api: DEBUG       → inicialmente ausente
+api: POSTGRES_DB → ausente
+db: POSTGRES_DB  → bootcamp_backend
+Concepto:
+variable usada por Compose ≠ variable dentro del contenedor
+DEBUG
+Se añadió DEBUG: ${DEBUG} al environment de api. Tras recrear el servicio:
+printenv DEBUG → True
+os.getenv("DEBUG") → True
+Mientras:
+os.getenv("POSTGRES_DB") → None
+Build-time vs Runtime
+No fue necesario reconstruir la imagen:
+cambio de imagen → build
+cambio runtime → recrear contenedor
+.gitignore y .dockerignore
+Se confirmó que .env está ignorado por Git. Se creó .dockerignore para excluir .env, entornos virtuales, cachés Python, .git y caché de pytest del contexto de build.
+.gitignore    → control de seguimiento Git
+.dockerignore → control del contexto de build Docker
+environment: vs env_file:
+environment: permite declarar explícitamente las variables entregadas al servicio. env_file: carga variables de un archivo al entorno del contenedor. Se mantiene el enfoque explícito con environment:.
+docker compose config
+Se verificó la configuración final resuelta:
+API: DATABASE_URL, DEBUG, SECRET_KEY
+DB: POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER
+Se destacó que este comando puede revelar secretos resueltos y su salida debe tratarse con cuidado.
+Estado del proyecto al Día 107
+Componentes integrados:
+- FastAPI / Pydantic
+- SQLAlchemy / PostgreSQL / psycopg
+- Alembic
+- pytest / TestClient
+- Argon2, login, JWT
+- autenticación y autorización por roles
+- Docker y Docker Compose
+- volumen PostgreSQL persistente
+- variables de entorno
+- .gitignore y .dockerignore

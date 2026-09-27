@@ -1,0 +1,17 @@
+# Variables sensibles
+.env
+
+# Entornos virtuales
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Git
+.git/
+.gitignore
+
+# Cache de pytest
+.pytest_cache/
