@@ -2670,3 +2670,57 @@ Componentes integrados:
 - volumen PostgreSQL persistente
 - variables de entorno
 - .gitignore y .dockerignore
+
+Día 108 — Proyecto 1 completamente dockerizado
+Se automatizó el arranque de la API:
+command: >
+  sh -c "alembic upgrade head &&
+         uvicorn App.main:app --host 0.0.0.0 --port 8000"
+Concepto:
+Alembic OK    → Uvicorn arranca
+Alembic FALLA → Uvicorn no arranca
+Se distinguió:
+healthcheck → PostgreSQL listo para conexiones
+Alembic     → esquema actualizado
+Uvicorn     → aplicación FastAPI
+Persistencia
+Se ejecutó docker compose down seguido de docker compose up -d. Los contenedores y la red fueron recreados, pero Docker Test permaneció gracias a postgres_data.
+Prueba HTTP
+GET /usuarios/1 devolvió correctamente Docker Test y Alembic continuó en 37e09c3bcc17 (head).
+Reconstrucción limpia
+Se ejecutó:
+docker compose down
+docker compose build --no-cache api
+docker compose up -d
+La imagen API se reconstruyó completamente y el sistema volvió a funcionar.
+Corrección conceptual consolidada:
+build de imagen API ≠ volumen postgres_data
+Reconstruir la imagen no elimina los datos de PostgreSQL.
+Flujo integrado
+docker compose up -d
+→ PostgreSQL
+→ healthcheck
+→ healthy
+→ API
+→ alembic upgrade head
+→ Uvicorn
+→ FastAPI
+→ SQLAlchemy
+→ psycopg
+→ db:5432
+→ PostgreSQL
+→ respuesta HTTP
+Componentes acumulados
+- FastAPI / Pydantic
+- SQLAlchemy / PostgreSQL / psycopg
+- Alembic
+- pytest / TestClient
+- Argon2, login y JWT
+- autenticación y autorización por roles
+- Docker / Docker Compose
+- volumen PostgreSQL persistente
+- healthcheck
+- migraciones automáticas
+- variables de entorno
+- .gitignore / .dockerignore
+Día 108 completado y aprobado.
