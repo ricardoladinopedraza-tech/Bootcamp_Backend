@@ -2724,3 +2724,34 @@ Componentes acumulados
 - variables de entorno
 - .gitignore / .dockerignore
 Día 108 completado y aprobado.
+
+Día 109 — Conceptos de despliegue
+Localhost y URL pública
+localhost es la máquina desde la que se hace la petición. Una URL pública permite acceder a una aplicación remota desde Internet.
+Servidor y hosting
+Servidor: máquina que ejecuta software y ofrece servicios.
+Hosting: infraestructura para ejecutar/publicar la aplicación; puede proporcionar red, URL, HTTPS y servicios administrados como PostgreSQL.
+Puertos
+localhost:8000 → host:8000 → container:8000 → Uvicorn
+En producción, la infraestructura puede recibir HTTPS y enrutar internamente hacia el puerto de la aplicación.
+PostgreSQL
+Cliente → API → SQLAlchemy → psycopg → PostgreSQL
+El cliente no necesita acceso directo a PostgreSQL.
+Variables de entorno
+LOCAL: .env → Compose → container
+PRODUCCIÓN: hosting → variables de entorno → aplicación
+La nueva dirección de BD se configura mediante DATABASE_URL, no hardcodeando database.py.
+Docker vs hosting
+Docker  → empaquetado y entorno reproducible
+Hosting → infraestructura para ejecutar/publicar
+Docker no hace pública la API por sí mismo.
+HTTPS
+HTTPS cifra el tráfico cliente-servidor, importante para login, contraseñas, JWT y datos.
+Flujo consolidado
+Código → Repositorio → Hosting → Docker → variables de entorno
+→ Alembic → Uvicorn → FastAPI → SQLAlchemy → PostgreSQL
+→ URL pública HTTPS
+Respuesta tipo entrevista
+Dockerizaría la API para tener un entorno reproducible, subiría el código a un repositorio y desplegaría la aplicación en un servicio de hosting. Configuraría allí las variables de entorno y secretos sin publicarlos en Git. Conectaría la API a PostgreSQL mediante DATABASE_URL, ejecutaría las migraciones de Alembic antes de iniciar Uvicorn y expondría la aplicación mediante una URL pública con HTTPS.
+
+Día 109 completado y aprobado.
