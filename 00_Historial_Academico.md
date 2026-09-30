@@ -2755,3 +2755,43 @@ Respuesta tipo entrevista
 Dockerizaría la API para tener un entorno reproducible, subiría el código a un repositorio y desplegaría la aplicación en un servicio de hosting. Configuraría allí las variables de entorno y secretos sin publicarlos en Git. Conectaría la API a PostgreSQL mediante DATABASE_URL, ejecutaría las migraciones de Alembic antes de iniciar Uvicorn y expondría la aplicación mediante una URL pública con HTTPS.
 
 Día 109 completado y aprobado.
+
+Día 110 --- Publicación remota del Proyecto 1
+Proyecto desplegado en Railway desde GitHub con PostgreSQL remoto.
+Arquitectura final:
+Internet / HTTPS
+ ↓
+Railway
+ ↓
+Public Networking :8080
+ ↓
+Uvicorn / FastAPI
+ ↓
+SQLAlchemy
+ ↓
+psycopg 3
+ ↓
+PostgreSQL Railway
+Incidencias reales resueltas
+1. Capitalización Windows/Linux: Database/Models/Routers/Services
+   fueron normalizados a minúsculas para coincidir con los imports.
+2. Driver PostgreSQL: Railway entregaba postgresql://; se
+   normalizó a postgresql+psycopg:// para usar psycopg 3.
+3. Alembic: alembic/env.py crea su engine mediante
+   engine_from_config(), por lo que también necesitó la normalización
+   del driver.
+4. Puerto: Railway asignó PORT=8080; Public Networking
+   inicialmente apuntaba al 8000 y generó 502. Al apuntar a 8080,
+   Swagger respondió.
+Verificación
+GET /usuarios/1 devolvió HTTP 404 con "Usuario no encontrado". Fue
+una respuesta válida y confirmó la comunicación completa con PostgreSQL
+Railway.
+Concepto clave
+Migración de esquema ≠ migración de datos.
+Alembic llevó el esqueleto de la base de datos (tablas, columnas,
+PK, FK y constraints), pero no los usuarios/pedidos de las bases
+locales.
+Método de trabajo reforzado
+error → logs → causa → un cambio → prueba local → commit/push → deploy → verificación
+Estado Día 110: COMPLETADO ✅
